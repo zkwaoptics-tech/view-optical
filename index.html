@@ -6,12 +6,6 @@
     <title>فيو للبصريات | View Optical</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<!-- كود معاينة اللوجو الخاص بـ View Optical -->
-<meta property="og:title" content="View Optical | فيو للبصريات">
-<meta property="og:description" content="تصفح أحدث تشكيلة نظارات وأطقم بصرية أونلاين.">
-<meta property="og:image" content="https://raw.githubusercontent.com/zkwaoptics-tech/view-optical/main/WhatsApp%20Image%202026-10-13%20at%205.44.28%20PM.jpeg">
-<meta property="og:url" content="https://tinyurl.com/view-optical-eg">
-<meta property="og:type" content="website">
     
     <!-- مكتبات Firebase السحابية للرابط المباشر -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -30,19 +24,26 @@
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background-color: var(--bg-light); color: var(--text-dark); line-height: 1.6; }
-img { 
-img { max-width: 100% !important; max-height: 250px !important; width: auto !important; height: auto !important; object-fit: contain !important; display: block; margin: 0 auto; }
-body { overflow-x: hidden; }
-/* كود سحب وتمرير الصور بصباعك مثل الاستوديو */
-.modal-body img, .product-gallery, .swiper-slide, .carousel-item {
-    scroll-snap-align: center;
-    touch-action: pan-x pan-y !important;
-    user-select: none;
-    -webkit-user-drag: none;
-}
 
-header {
-    background-color: var(--primary);        .cart-btn {
+        header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .logo { display: flex; flex-direction: column; cursor: pointer; user-select: none; }
+        .logo-ar { font-size: 22px; font-weight: 900; color: var(--accent); }
+        .logo-en { font-size: 11px; color: var(--gray); letter-spacing: 2px; }
+
+        .header-actions { display: flex; gap: 12px; align-items: center; }
+        
+        .cart-btn {
             background: var(--accent);
             color: var(--primary);
             border: none;

@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فيو للبصريات | View Optical</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- مكتبات Firebase السحابية للرابط المباشر -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #d4af37;
+            --bg-light: #f8fafc;
+            --text-dark: #334155;
+            --white: #ffffff;
+            --gray: #94a3b8;
+            --red: #ef4444;
+            --green: #25d366;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background-color: var(--bg-light); color: var(--text-dark); line-height: 1.6; }
+
+        header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .logo { display: flex; flex-direction: column; cursor: pointer; user-select: none; }
+        .logo-ar { font-size: 22px; font-weight: 900; color: var(--accent); }
+        .logo-en { font-size: 11px; color: var(--gray); letter-spacing: 2px; }
+
+        .header-actions { display: flex; gap: 12px; align-items: center; }
+        
+        .cart-btn {
+            background: var(--accent);
+            color: var(--primary);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .cart-count {
+            background: var(--red);
+            color: var(--white);
+            border-radius: 50%;
+            padding: 2px 7px;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        /* زر الواتساب العائم الثابت */
+        .floating-whatsapp {
+            position: fixed; bottom: 25px; left: 25px; background-color: var(--green); color: var(--white);
+            width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            font-size: 32px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); z-index: 2500; text-decoration: none; transition: transform 0.3s;
+        }
+        .floating-whatsapp:hover { transform: scale(1.1); }
+
+        .hero {
+            background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), url('https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=1200&q=80') center/cover;
+            color: var(--white); text-align: center; padding: 40px 20px;
+        }
+        .hero h1 { font-size: 30px; color: var(--accent); margin-bottom: 5px; }
+
+        .container { max-width: 1200px; margin: 25px auto; padding: 0 20px; }
+
+        .filters-container { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; }
+        .categories-filter { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .filter-btn {
+            background: var(--white); border: 1px solid #cbd5e1; padding: 8px 18px; border-radius: 30px;
+            cursor: pointer; font-weight: 700; transition: 0.3s;
+        }
+        .filter-btn.active, .filter-btn:hover { background: var(--primary); color: var(--white); border-color: var(--primary); }
+
+        .secondary-filters { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .secondary-filters select, .secondary-filters input {
+            padding: 8px 14px; border-radius: 8px; border: 1px solid #cbd5e1; font-weight: 700;
+        }
+
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+        .product-card {
+            background: var(--white); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex; flex-direction: column; position: relative;
+        }
+        .sale-badge {
+            position: absolute; top: 10px; right: 10px; background: var(--red); color: var(--white);
+            padding: 3px 8px; border-radius: 6px; font-weight: 900; font-size: 11px; z-index: 10;
+        }
+
+        .product-images { position: relative; height: 190px; background: #f1f5f9; cursor: zoom-in; }
+        .product-images img {
+            width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.4s;
+        }
+        .product-images img.active { opacity: 1; }
+        .img-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; z-index: 5; }
+        .dot { width: 7px; height: 7px; background: rgba(255,255,255,0.6); border-radius: 50%; cursor: pointer; }
+        .dot.active { background: var(--accent); }
+
+        .product-info { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--gray); font-weight: 700; margin-bottom: 4px; }
+        .product-code { font-size: 12px; color: var(--accent); background: var(--primary); padding: 2px 6px; border-radius: 4px; font-weight: 900; display: inline-block; }
+        
+        .product-title { font-size: 16px; font-weight: 700; margin: 6px 0 2px 0; color: var(--primary); }
+        .product-size { font-size: 12px; color: var(--gray); font-weight: 600; margin-bottom: 8px; }
+
+        .price-box { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; }
+        .product-price { font-size: 18px; font-weight: 900; color: var(--accent); }
+        .old-price { font-size: 13px; color: var(--gray); text-decoration: line-through; }
+
+        .card-actions { display: flex; gap: 8px; margin-top: auto; }
+        .add-to-cart-btn {
+            flex: 1; background: var(--primary); color: var(--white); border: none; padding: 10px;
+            border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.3s;
+        }
+        .add-to-cart-btn:hover { background: var(--accent); color: var(--primary); }
+
+        .direct-wa-btn {
+            background: var(--green); color: var(--white); border: none; padding: 10px 12px;
+            border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; text-decoration: none;
+        }
+
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: var(--white); width: 90%; max-width: 850px; max-height: 90vh;
+            border-radius: 12px; padding: 25px; overflow-y: auto; position: relative;
+        }
+        .close-modal { position: absolute; top: 15px; left: 15px; font-size: 22px; cursor: pointer; color: var(--gray); }
+        .modal-title { font-size: 20px; font-weight: 900; margin-bottom: 15px; color: var(--primary); border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
+
+        .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+        .form-group label { font-weight: 700; font-size: 13px; }
+        .form-group input, .form-group select { padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; }
+        .file-input-group { background: #fff; padding: 8px; border: 1px dashed var(--accent); border-radius: 6px; }
+        .img-preview { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; display: none; margin-top: 5px; }
+
+        .save-btn { background: var(--primary); color: var(--accent); border: none; padding: 10px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: var(--white); }
+        th, td { padding: 8px; text-align: right; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
+        th { background: #e2e8f0; font-weight: 700; }
+        .delete-btn { background: var(--red); color: var(--white); border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-weight: 700; }
+
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
+        .checkout-box { background: #f8fafc; padding: 15px; border-radius: 8px; margin-top: 15px; }
+
+        /* Lightbox عالي التكبير */
+        .lightbox-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95); z-index: 3000; justify-content: center; align-items: center;
+            flex-direction: column; overflow: hidden;
+        }
+        .lightbox-container {
+            width: 100%; height: 85vh; display: flex; justify-content: center; align-items: center; overflow: auto; position: relative;
+        }
+        .lightbox-img {
+            max-width: none; max-height: none; width: auto; height: auto;
+            transition: transform 0.1s ease; cursor: grab; border-radius: 4px;
+        }
+        .lightbox-img:active { cursor: grabbing; }
+        .lightbox-close { position: absolute; top: 20px; left: 25px; color: var(--white); font-size: 30px; cursor: pointer; z-index: 3010; background: rgba(0,0,0,0.5); padding: 5px 12px; border-radius: 50%; }
+        .lightbox-zoom-controls {
+            position: absolute; bottom: 20px; display: flex; gap: 10px; background: rgba(0,0,0,0.6); padding: 10px 20px; border-radius: 30px; z-index: 3010;
+        }
+        .zoom-btn { background: var(--accent); color: var(--primary); border: none; padding: 6px 14px; border-radius: 6px; font-weight: 900; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <!-- زر الواتساب العائم الثابت -->
+    <a id="floatingWaBtn" href="#" target="_blank" class="floating-whatsapp" title="تواصل معنا مباشرة عبر الواتساب">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <header>
+        <div class="logo" onclick="checkAdminSecret(event)" title="عرض المنتجات">
+            <span class="logo-ar">فيو للبصريات</span>
+            <span class="logo-en">VIEW OPTICAL</span>
+        </div>
+        <div class="header-actions">
+            <button class="cart-btn" onclick="openCartModal()">
+                <i class="fa-solid fa-cart-shopping"></i> السلة
+                <span class="cart-count" id="cartCount">0</span>
+            </button>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>تشكيلة النظارات والعدسات اللاصقة الفاخرة</h1>
+        <p>تصفح أحدث الموديلات واطلبها مباشرة عبر الواتساب</p>
+    </section>
+
+    <div class="container">
+        <div class="filters-container">
+            <div class="categories-filter">
+                <button class="filter-btn active" onclick="filterCategory('all', this)">جميع المنتجات</button>
+                <button class="filter-btn" onclick="filterCategory('sunglasses', this)">🕶️ نظارات شمسية</button>
+                <button class="filter-btn" onclick="filterCategory('optical', this)">👓 نظارات طبية</button>
+                <button class="filter-btn" onclick="filterCategory('kids', this)">👶 نظارات أطفال</button>
+                <button class="filter-btn" onclick="filterCategory('lenses', this)">👁️ عدسات لاصقة</button>
+                <button class="filter-btn" onclick="filterCategory('sale', this)" style="color: var(--red);">🔥 العروض (Sale)</button>
+            </div>
+            <div class="secondary-filters">
+                <select id="brandFilter" onchange="applyFilters()">
+                    <option value="all">جميع الماركات / شركات العدسات</option>
+                </select>
+                <input type="text" id="searchInput" placeholder="ابحث بالكود، اللون، أو الموديل..." oninput="applyFilters()" style="width: 240px;">
+            </div>
+        </div>
+
+        <div class="products-grid" id="productsGrid"></div>
+    </div>
+
+    <!-- Lightbox تكبير -->
+    <div class="lightbox-modal" id="lightboxModal">
+        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <div class="lightbox-container" id="lightboxContainer">
+            <img id="lightboxImage" class="lightbox-img" src="" alt="تكبير الصورة">
+        </div>
+        <div class="lightbox-zoom-controls">
+            <button class="zoom-btn" onclick="zoomIn()"><i class="fa-solid fa-magnifying-glass-plus"></i> تكبير</button>
+            <button class="zoom-btn" onclick="zoomOut()"><i class="fa-solid fa-magnifying-glass-minus"></i> تصغير</button>
+            <button class="zoom-btn" onclick="resetZoom()">إعادة ضبط</button>
+        </div>
+    </div>
+
+    <!-- نافذة السلة والطلب -->
+    <div class="modal" id="cartModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeCartModal()">&times;</span>
+            <div class="modal-title">سلة التسوق الخاصة بك</div>
+            <div id="cartItemsList"></div>
+            
+            <div class="checkout-box" id="checkoutSection" style="display:none;">
+                <h4 style="margin-bottom:10px;">بيانات التواصل لإتمام الطلب:</h4>
+                <div class="form-group">
+                    <label>الاسم بالكامل</label>
+                    <input type="text" id="custName" placeholder="أدخل اسمك الكريم" required>
+                </div>
+                <div class="form-group">
+                    <label>رقم التليفون / الموبايل</label>
+                    <input type="text" id="custPhone" placeholder="أدخل رقم موبايلك" required>
+                </div>
+                <div style="font-weight:900; font-size:16px; margin: 10px 0; color:var(--primary);">
+                    الإجمالي: <span id="cartTotal">0</span> ج.م
+                </div>
+                <button class="save-btn" style="background:var(--green); color:var(--white); width:100%;" onclick="submitOrder()">
+                    <i class="fa-brands fa-whatsapp"></i> تأكيد وإرسال الطلب عبر الواتساب
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- لوحة التحكم -->
+    <div class="modal" id="adminModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeAdminModal()">&times;</span>
+            <div class="modal-title">لوحة تحكم فيو للبصريات (سحابي ☁️)</div>
+            
+            <!-- إعدادات الواتساب -->
+            <div style="background:#f1f5f9; padding:15px; border-radius:8px; margin-bottom:20px;">
+                <h4>إعدادات الواتساب</h4>
+                <div style="display:flex; gap:10px; margin-top:8px;">
+                    <input type="text" id="settingWa" placeholder="رقم الواتساب 2010xxxx" style="flex:1; padding:8px; border-radius:6px; border:1px solid #cbd5e1;">
+                    <button class="save-btn" onclick="saveSettings()">حفظ الرقم</button>
+                </div>
+            </div>
+
+            <!-- تغيير الرمز السري -->
+            <div style="background:#e0f2fe; padding:15px; border-radius:8px; margin-bottom:20px; border: 1px solid #bae6fd;">
+                <h4 style="color:#0369a1;">🔐 تغيير الرمز السري للوحة التحكم</h4>
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-top:8px;">
+                    <div class="form-group"><label>الرمز السري القديم</label><input type="password" id="oldPin" placeholder="الرمز القديم"></div>
+                    <div class="form-group"><label>الرمز السري الجديد (حروف/رموز)</label><input type="text" id="newPin" placeholder="الرمز الجديد"></div>
+                    <div class="form-group" style="display:flex; align-items:flex-end;"><button class="save-btn" style="background:#0284c7; width:100%;" onclick="changeAdminPin()">تحديث الرمز</button></div>
+                </div>
+            </div>
+
+            <!-- نموذج إضافة النظارات -->
+            <div style="background:#f1f5f9; padding:15px; border-radius:8px; margin-bottom:20px;">
+                <h4>إضافة نظارة جديدة</h4>
+                <form id="addGlassesForm" onsubmit="handleAddGlasses(event)">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                        <div class="form-group"><label>كود النظارة</label><input type="text" id="gCode" required placeholder="مثال: V-101"></div>
+                        <div class="form-group"><label>اسم الموديل</label><input type="text" id="gName" required placeholder="مثال: RayBan Classic"></div>
+                    </div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
+                        <div class="form-group"><label>البراند</label><input type="text" id="gBrand" required placeholder="RayBan, Gucci..."></div>
+                        <div class="form-group">
+                            <label>القسم</label>
+                            <select id="gCategory">
+                                <option value="sunglasses">نظارة شمسية</option>
+                                <option value="optical">نظارة طبية</option>
+                                <option value="kids">نظارة أطفال</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>المقاس والأبعاد</label><input type="text" id="gSize" placeholder="54-18-140"></div>
+                    </div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
+                        <div class="form-group"><label>Sale؟</label><select id="gIsSale"><option value="no">لا</option><option value="yes">نعم</option></select></div>
+                        <div class="form-group"><label>السعر (ج.م)</label><input type="number" id="gPrice" required placeholder="1200"></div>
+                        <div class="form-group"><label>السعر القديم</label><input type="number" id="gOldPrice" placeholder="1500"></div>
+                    </div>
+                    <div class="form-group file-input-group"><label>📸 صورة أساسية:</label><input type="file" id="gImg1" accept="image/*" required onchange="previewImage(this, 'prevG1')"><img id="prevG1" class="img-preview"></div>
+                    <div class="form-group file-input-group"><label>📸 صورة 2 (اختياري):</label><input type="file" id="gImg2" accept="image/*" onchange="previewImage(this, 'prevG2')"><img id="prevG2" class="img-preview"></div>
+                    <div class="form-group file-input-group"><label>📸 صورة 3 (اختياري):</label><input type="file" id="gImg3" accept="image/*" onchange="previewImage(this, 'prevG3')"><img id="prevG3" class="img-preview"></div>
+                    <button type="submit" class="save-btn" style="margin-top:10px;">حفظ النظارة بالسحابة</button>
+                </form>
+            </div>
+
+            <!-- نموذج إضافة العدسات -->
+            <div style="background:#fef3c7; padding:15px; border-radius:8px; margin-bottom:20px;">
+                <h4>إضافة عدسات لاصقة (كود اختياري)</h4>
+                <form id="addLensForm" onsubmit="handleAddLens(event)">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
+                        <div class="form-group"><label>اسم الشركة (البراند)</label><input type="text" id="lBrand" required placeholder="Dahab / Bella"></div>
+                        <div class="form-group"><label>اسم اللون / الوصف</label><input type="text" id="lName" required placeholder="Luminaire Gray"></div>
+                        <div class="form-group"><label>كود العدسة (اختياري)</label><input type="text" id="lCode" placeholder="اختياري"></div>
+                    </div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                        <div class="form-group"><label>المدة / تفاصيل</label><input type="text" id="lSize" placeholder="سنوية / شهرية"></div>
+                        <div class="form-group"><label>السعر (ج.م)</label><input type="number" id="lPrice" required placeholder="650"></div>
+                    </div>
+                    <div class="form-group file-input-group" style="background:#fff;">
+                        <label>📸 صورة اللون:</label>
+                        <input type="file" id="lImg" accept="image/*" required onchange="previewImage(this, 'prevL')">
+                        <img id="prevL" class="img-preview">
+                    </div>
+                    <button type="submit" class="save-btn" style="background:var(--accent); color:var(--primary); margin-top:10px;">إضافة لون العدسة بالسحابة</button>
+                </form>
+            </div>
+
+            <!-- إدارة وحذف -->
+            <div style="background:#f1f5f9; padding:15px; border-radius:8px; margin-bottom:20px;">
+                <h4>البحث والحذف السريع (من السحابة)</h4>
+                <input type="text" id="adminSearchInput" oninput="renderAdminTable()" placeholder="ابحث بالكود أو الموديل..." style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; margin-top:8px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>الكود / البراند</th>
+                            <th>الاسم / اللون</th>
+                            <th>السعر</th>
+                            <th>إجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminProductsTable"></tbody>
+                </table>
+            </div>
+
+            <!-- سجل الطلبات -->
+            <div style="background:#f1f5f9; padding:15px; border-radius:8px;">
+                <h4>سجل الطلبات والعملاء (من السحابة)</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>الاسم</th>
+                            <th>التليفون</th>
+                            <th>الطلبات</th>
+                            <th>الإجمالي</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminOrdersTable"></tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // إعدادات Firebase الخاصة بك
+        const firebaseConfig = {
+            apiKey: "AIzaSyDTj7ZJuCh9o0UXBpD0KPuMwTpIpKWwzBM",
+            authDomain: "view-optical-wip.firebaseapp.com",
+            databaseURL: "https://view-optical-wip-default-rtdb.firebaseio.com",
+            projectId: "view-optical-wip",
+            storageBucket: "view-optical-wip.firebasestorage.app",
+            messagingSenderId: "430499491452",
+            appId: "1:430499491452:web:91186be3f4e7e6b80b63f9"
+        };
+
+        // تهيئة فايربيز
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let settings = { whatsapp: "201000000000", adminPin: "1234" };
+        let products = [];
+        let cart = [];
+        let orders = [];
+        let currentCategory = 'all';
+
+        let currentZoom = 1;
+        let imgElement = document.getElementById('lightboxImage');
+
+        // جلب البيانات من السحابة لحظياً (Realtime Sync)
+        db.ref('settings').on('value', (snapshot) => {
+            if (snapshot.exists()) {
+                settings = snapshot.val();
+                if(!settings.adminPin) settings.adminPin = "1234";
+                updateFloatingWhatsApp();
+                if(document.getElementById('settingWa')) {
+                    document.getElementById('settingWa').value = settings.whatsapp;
+                }
+            }
+        });
+
+        db.ref('products').on('value', (snapshot) => {
+            products = [];
+            if (snapshot.exists()) {
+                snapshot.forEach((childSnapshot) => {
+                    products.push({ id: childSnapshot.key, ...childSnapshot.val() });
+                });
+            } else {
+                // منتج تجريبي أول مرة لو القاعدة فارغة
+                products = [
+                    {
+                        id: "default_1",
+                        code: "V-101",
+                        name: "هوغو بوس شمسية",
+                        brand: "Hugo Boss",
+                        size: "54-18-140",
+                        category: "sunglasses",
+                        isSale: "yes",
+                        price: "1200",
+                        oldPrice: "1600",
+                        images: ["https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=500&q=80"]
+                    }
+                ];
+            }
+            renderProducts();
+            if(document.getElementById('adminModal').style.display === 'flex') {
+                renderAdminTable();
+            }
+        });
+
+        db.ref('orders').on('value', (snapshot) => {
+            orders = [];
+            if (snapshot.exists()) {
+                snapshot.forEach((childSnapshot) => {
+                    orders.push({ id: childSnapshot.key, ...childSnapshot.val() });
+                });
+            }
+            if(document.getElementById('adminModal').style.display === 'flex') {
+                renderOrdersTable();
+            }
+        });
+
+        // نظام الضغطات السرية (3 ضغطات على اللوجو لفتح لوحة التحكم)
+        let clickCount = 0;
+        let clickTimer = null;
+        function checkAdminSecret(e) {
+            clickCount++;
+            if (clickCount === 1) {
+                clickTimer = setTimeout(() => { clickCount = 0; }, 600);
+            } else if (clickCount === 3) {
+                clearTimeout(clickTimer);
+                clickCount = 0;
+                promptForAdminPin();
+            }
+        }
+
+        function promptForAdminPin() {
+            const pwd = prompt("أدخل الرمز السري للوحة التحكم:");
+            if (pwd === settings.adminPin) {
+                document.getElementById('adminModal').style.display = 'flex';
+                document.getElementById('settingWa').value = settings.whatsapp;
+                renderAdminTable();
+                renderOrdersTable();
+            } else if (pwd !== null) {
+                alert("الرمز السري غير صحيح!");
+            }
+        }
+
+        function changeAdminPin() {
+            const oldP = document.getElementById('oldPin').value;
+            const newP = document.getElementById('newPin').value;
+
+            if (oldP !== settings.adminPin) {
+                alert("الرمز السري القديم غير صحيح!");
+                return;
+            }
+            if (!newP || newP.trim() === "") {
+                alert("يرجى كتابة الرمز السري الجديد!");
+                return;
+            }
+
+            settings.adminPin = newP.trim();
+            db.ref('settings').set(settings);
+            document.getElementById('oldPin').value = '';
+            document.getElementById('newPin').value = '';
+            alert("تم تحديث الرمز السري وحفظه في السحابة بنجاح!");
+        }
+
+        function updateFloatingWhatsApp() {
+            const waLink = `https://wa.me/${settings.whatsapp}?text=${encodeURIComponent('مرحباً فيو للبصريات، أود الاستفسار عن المنتجات لديكم.')}`;
+            document.getElementById('floatingWaBtn').href = waLink;
+        }
+
+        function previewImage(input, previewId) {
+            const preview = document.getElementById(previewId);
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function readFileAsDataURL(file) {
+            return new Promise((resolve, reject) => {
+                if (!file) resolve(null);
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            const brandVal = document.getElementById('brandFilter').value;
+
+            let filtered = products.filter(p => {
+                let matchCat = true;
+                if (currentCategory === 'sale') matchCat = p.isSale === 'yes';
+                else if (currentCategory !== 'all') matchCat = p.category === currentCategory;
+
+                let matchBrand = brandVal === 'all' || p.brand.toLowerCase() === brandVal.toLowerCase();
+                let matchSearch = p.name.toLowerCase().includes(searchVal) || (p.code && p.code.toLowerCase().includes(searchVal)) || p.brand.toLowerCase().includes(searchVal);
+
+                return matchCat && matchBrand && matchSearch;
+            });
+
+            updateBrandDropdown();
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--gray); padding: 40px;">لا توجد منتجات مطابقة للبحث.</p>`;
+                return;
+            }
+
+            filtered.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+
+                let imgsHtml = '';
+                let dotsHtml = '';
+                if(product.images && Array.isArray(product.images)) {
+                    product.images.forEach((img, idx) => {
+                        imgsHtml += `<img src="${img}" class="${idx === 0 ? 'active' : ''}" onclick="openLightbox('${img}')">`;
+                        if (product.images.length > 1) {
+                            dotsHtml += `<span class="dot ${idx === 0 ? 'active' : ''}" onclick="event.stopPropagation(); changeSlide('${product.id}', ${idx})"></span>`;
+                        }
+                    });
+                }
+
+                let catName = product.category === 'lenses' ? 'عدسات لاصقة' : (product.category === 'optical' ? 'طبية' : (product.category === 'kids' ? 'أطفال' : 'شمسية'));
+                
+                let directWaMsg = encodeURIComponent(
+                    `مرحباً فيو للبصريات 👓\n` +
+                    `أريد الاستفسار أو طلب هذا المنتج:\n\n` +
+                    `🔹 الموديل / الاسم: ${product.name}\n` +
+                    `🔹 البراند / الشركة: ${product.brand}\n` +
+                    (product.code ? `🔹 الكود: ${product.code}\n` : '') +
+                    (product.size ? `🔹 المقاس / التفاصيل: ${product.size}\n` : '') +
+                    `🔹 السعر: ${product.price} ج.م\n\n` +
+                    `🖼️ رابط معاينة صورة المنتج:\n${product.images && product.images[0] ? product.images[0] : ''}`
+                );
+
+                card.innerHTML = `
+                    ${product.isSale === 'yes' ? '<div class="sale-badge">SALE</div>' : ''}
+                    <div class="product-images" id="slider-${product.id}">
+                        ${imgsHtml}
+                        <div class="img-dots">${dotsHtml}</div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-meta">
+                            <span>${product.brand} (${catName})</span>
+                            ${product.code ? `<span class="product-code">كود: ${product.code}</span>` : ''}
+                        </div>
+                        <h3 class="product-title">${product.name}</h3>
+                        ${product.size ? `<div class="product-size"><i class="fa-solid fa-circle-info"></i> ${product.size}</div>` : ''}
+                        <div class="price-box">
+                            <span class="product-price">${product.price} ج.م</span>
+                            ${product.oldPrice ? `<span class="old-price">${product.oldPrice} ج.م</span>` : ''}
+                        </div>
+                        <div class="card-actions">
+                            <button class="add-to-cart-btn" onclick="addToCart('${product.id}')">
+                                <i class="fa-solid fa-cart-plus"></i> للسلة
+                            </button>
+                            <a href="https://wa.me/${settings.whatsapp}?text=${directWaMsg}" target="_blank" class="direct-wa-btn" title="طلب أو استفسار مباشر عبر واتساب">
+                                <i class="fa-brands fa-whatsapp" style="font-size:18px;"></i> اطلب
+                            </a>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openLightbox(imgSrc) {
+            currentZoom = 1;
+            imgElement.src = imgSrc;
+            imgElement.style.transform = `scale(${currentZoom})`;
+            document.getElementById('lightboxModal').style.display = 'flex';
+        }
+
+        function closeLightbox() { document.getElementById('lightboxModal').style.display = 'none'; }
+        function zoomIn() { currentZoom += 0.3; imgElement.style.transform = `scale(${currentZoom})`; }
+        function zoomOut() { if (currentZoom > 0.5) { currentZoom -= 0.3; imgElement.style.transform = `scale(${currentZoom})`; } }
+        function resetZoom() { currentZoom = 1; imgElement.style.transform = `scale(${currentZoom})`; }
+
+        function updateBrandDropdown() {
+            const select = document.getElementById('brandFilter');
+            const currentVal = select.value;
+            let currentProducts = products;
+            if (currentCategory === 'sale') currentProducts = products.filter(p => p.isSale === 'yes');
+            else if (currentCategory !== 'all') currentProducts = products.filter(p => p.category === currentCategory);
+
+            const brands = [...new Set(currentProducts.map(p => p.brand))];
+            select.innerHTML = `<option value="all">جميع الماركات / شركات العدسات</option>`;
+            brands.forEach(b => select.innerHTML += `<option value="${b}">${b}</option>`);
+            select.value = currentVal;
+        }
+
+        function changeSlide(productId, imgIndex) {
+            const slider = document.getElementById(`slider-${productId}`);
+            const imgs = slider.querySelectorAll('img');
+            const dots = slider.querySelectorAll('.dot');
+            imgs.forEach(img => img.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+            if(imgs[imgIndex]) imgs[imgIndex].classList.add('active');
+            if(dots[imgIndex]) dots[imgIndex].classList.add('active');
+        }
+
+        function filterCategory(cat, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentCategory = cat;
+            document.getElementById('brandFilter').value = 'all';
+            renderProducts();
+        }
+
+        function applyFilters() { renderProducts(); }
+
+        function addToCart(pId) {
+            const item = products.find(p => p.id === pId);
+            if (item) {
+                cart.push(item);
+                document.getElementById('cartCount').innerText = cart.length;
+                alert(`تم إضافة (${item.name}) للسلة!`);
+            }
+        }
+
+        function openCartModal() { document.getElementById('cartModal').style.display = 'flex'; renderCartList(); }
+        function closeCartModal() { document.getElementById('cartModal').style.display = 'none'; }
+
+        function renderCartList() {
+            const list = document.getElementById('cartItemsList');
+            const checkoutSec = document.getElementById('checkoutSection');
+            list.innerHTML = '';
+
+            if (cart.length === 0) {
+                list.innerHTML = '<p style="text-align:center; padding:20px; color:var(--gray);">السلة فارغة حالياً.</p>';
+                checkoutSec.style.display = 'none';
+                return;
+            }
+
+            checkoutSec.style.display = 'block';
+            let total = 0;
+            cart.forEach((item, index) => {
+                total += parseFloat(item.price);
+                list.innerHTML += `
+                    <div class="cart-item">
+                        <div>
+                            <strong>${item.name}</strong>
+                            <div style="font-size:12px; color:var(--gray);">${item.price} ج.م (${item.brand})</div>
+                        </div>
+                        <button class="delete-btn" onclick="removeFromCart(${index})">حذف</button>
+                    </div>
+                `;
+            });
+            document.getElementById('cartTotal').innerText = total;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            document.getElementById('cartCount').innerText = cart.length;
+            renderCartList();
+        }
+
+        function submitOrder() {
+            const name = document.getElementById('custName').value.trim();
+            const phone = document.getElementById('custPhone').value.trim();
+
+            if (!name || !phone) { alert("يرجى إدخال الاسم ورقم التليفون أولاً!"); return; }
+
+            let itemsSummary = cart.map(i => 
+                `• الموديل: ${i.name}\n  البراند: ${i.brand}\n  ${i.code ? 'الكود: ' + i.code + '\n' : ''}  السعر: ${i.price} ج.م\n  الصورة: ${i.images && i.images[0] ? i.images[0] : ''}`
+            ).join('\n\n');
+
+            let total = document.getElementById('cartTotal').innerText;
+            let orderText = `مرحباً فيو للبصريات 👓\nأود طلب المنتجات التالية من السلة:\n\n${itemsSummary}\n\n------------------\nالإجمالي الكلي: ${total} ج.م\n\nبيانات العميل:\nالاسم: ${name}\nالهاتف: ${phone}`;
+
+            // حفظ الطلب في السحابة مباشرة
+            db.ref('orders').push({ name, phone, itemsSummary, total, date: new Date().toLocaleString() });
+
+            window.open(`https://wa.me/${settings.whatsapp}?text=${encodeURIComponent(orderText)}`, '_blank');
+            cart = [];
+            document.getElementById('cartCount').innerText = '0';
+            closeCartModal();
+        }
+
+        function closeAdminModal() { document.getElementById('adminModal').style.display = 'none'; }
+
+        function saveSettings() {
+            const newWa = document.getElementById('settingWa').value;
+            if (newWa) {
+                settings.whatsapp = newWa;
+                db.ref('settings').set(settings);
+                updateFloatingWhatsApp();
+                alert("تم حفظ وتحديث رقم الواتساب في السحابة بنجاح!");
+            }
+        }
+
+        async function handleAddGlasses(e) {
+            e.preventDefault();
+            const file1 = document.getElementById('gImg1').files[0];
+            const file2 = document.getElementById('gImg2').files[0];
+            const file3 = document.getElementById('gImg3').files[0];
+            if (!file1) { alert("اختر الصورة الأساسية!"); return; }
+
+            const img1 = await readFileAsDataURL(file1);
+            const img2 = file2 ? await readFileAsDataURL(file2) : null;
+            const img3 = file3 ? await readFileAsDataURL(file3) : null;
+
+            const newProduct = {
+                code: document.getElementById('gCode').value.trim(),
+                name: document.getElementById('gName').value.trim(),
+                brand: document.getElementById('gBrand').value.trim(),
+                size: document.getElementById('gSize').value.trim(),
+                category: document.getElementById('gCategory').value,
+                isSale: document.getElementById('gIsSale').value,
+                price: document.getElementById('gPrice').value,
+                oldPrice: document.getElementById('gOldPrice').value,
+                images: [img1, img2, img3].filter(Boolean)
+            };
+
+            // رفع المنتج الجديد للسحابة مباشرة
+            db.ref('products').push(newProduct);
+
+            renderAdminTable();
+            document.getElementById('addGlassesForm').reset();
+            document.querySelectorAll('#addGlassesForm .img-preview').forEach(i => i.style.display = 'none');
+            alert("تم إضافة النظارة إلى السحابة بنجاح وستظهر لدى جميع العملاء فوراً!");
+        }
+
+        async function handleAddLens(e) {
+            e.preventDefault();
+            const file = document.getElementById('lImg').files[0];
+            if (!file) { alert("اختر صورة العدسة!"); return; }
+
+            const imgBase64 = await readFileAsDataURL(file);
+            const customCode = document.getElementById('lCode').value.trim();
+
+            const newLens = {
+                code: customCode !== "" ? customCode : null,
+                name: document.getElementById('lName').value.trim(),
+                brand: document.getElementById('lBrand').value.trim(),
+                size: document.getElementById('lSize').value.trim(),
+                category: "lenses",
+                isSale: "no",
+                price: document.getElementById('lPrice').value,
+                oldPrice: "",
+                images: [imgBase64]
+            };
+
+            // رفع العدسة للسحابة مباشرة
+            db.ref('products').push(newLens);
+
+            renderAdminTable();
+            document.getElementById('addLensForm').reset();
+            document.getElementById('prevL').style.display = 'none';
+            alert("تم إضافة العدسة إلى السحابة بنجاح!");
+        }
+
+        function renderAdminTable() {
+            const tbody = document.getElementById('adminProductsTable');
+            const query = (document.getElementById('adminSearchInput')?.value || '').toLowerCase();
+            tbody.innerHTML = '';
+
+            let filtered = products.filter(p => p.name.toLowerCase().includes(query) || p.brand.toLowerCase().includes(query) || (p.code && p.code.toLowerCase().includes(query)));
+
+            filtered.forEach(p => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${p.code ? p.code : p.brand}</td>
+                        <td>${p.name}</td>
+                        <td>${p.price} ج.م</td>
+                        <td><button class="delete-btn" onclick="deleteProduct('${p.id}')">حذف</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function deleteProduct(id) {
+            if (confirm("هل أنت متأكد من الحذف؟ سيتم حذفه من السحابة نهائياً.")) {
+                db.ref('products/' + id).remove();
+            }
+        }
+
+        function renderOrdersTable() {
+            const tbody = document.getElementById('adminOrdersTable');
+            tbody.innerHTML = '';
+            orders.forEach(o => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${o.name}</td>
+                        <td>${o.phone}</td>
+                        <td style="white-space:pre-line;">${o.itemsSummary}</td>
+                        <td>${o.total} ج.م</td>
+                    </tr>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>

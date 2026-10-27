@@ -224,7 +224,7 @@
 <body>
 
     <!-- زر الواتساب العائم الثابت -->
-    <a id="floatingWaBtn" href="#" target="_blank" class="floating-whatsapp" title="تواصل معنا مباشرة عبر الواتساب">
+    <a id="floatingWaBtn" href="#" onclick="openWhatsAppChat(); return false;" class="floating-whatsapp" title="تواصل معنا مباشرة عبر الواتساب">
         <i class="fa-brands fa-whatsapp"></i>
     </a>
 
@@ -459,17 +459,16 @@
             let visits = JSON.parse(localStorage.getItem('view_optical_visits') || '[]');
             let now = new Date();
             let visitRecord = {
-                date: now.toISOString().split('T')[0], // YYYY-MM-DD
-                month: now.toISOString().substring(0, 7), // YYYY-MM
+                date: now.toISOString().split('T')[0],
+                month: now.toISOString().substring(0, 7),
                 year: now.getFullYear(),
-                hour: now.getHours() // 0-23
+                hour: now.getHours()
             };
             visits.push(visitRecord);
             localStorage.setItem('view_optical_visits', JSON.stringify(visits));
         }
         trackVisitorAnalytics();
 
-        // تحليل ذكي لساعات الذروة
         function getPeakHoursSummary(visitsArray) {
             if (!visitsArray || visitsArray.length === 0) return "لا توجد زيارات كافية بعد.";
             let hourCounts = {};
@@ -508,7 +507,6 @@
             }
 
             let peakText = getPeakHoursSummary(filteredVisits);
-            document.getElementById('visitorStatsBoxinnerHTML') = '';
             document.getElementById('visitorStatsBox').innerHTML = `
                 📌 ${label}: <b>${filteredVisits.length}</b> زائر<br>
                 ⏰ ${peakText}
@@ -533,6 +531,26 @@
                 📌 عدد الزوار: <b>${filtered.length}</b> زائر<br>
                 ⏰ ${peakText}
             `;
+        }
+
+        // دالة إرسال آمنة ومضمونة 100% للواتساب (تمنع حظر المتصفحات وتفتح التطبيق مباشرة)
+        function sendToWhatsApp(messageText) {
+            let rawNumber = settings.whatsapp || "201000000000";
+            // تنظيف الرقم من أي رموز أو مسافات زائدة
+            let cleanNumber = rawNumber.replace(/\D/g, '');
+            
+            let waUrl = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(messageText)}`;
+            
+            // فتح الرابط بطريقة آمنة تعمل على كافة أجهزة الهواتف والكمبيوتر
+            let win = window.open(waUrl, '_blank');
+            if (!win) {
+                window.location.href = waUrl;
+            }
+        }
+
+        function openWhatsAppChat() {
+            let welcomeMsg = "مرحباً فيو للبصريات، أود الاستفسار عن المنتجات لديكم.";
+            sendToWhatsApp(welcomeMsg);
         }
 
         // ضغط الصور تلقائياً لسرعة فائقة
@@ -579,7 +597,6 @@
             if (snapshot.exists()) {
                 settings = snapshot.val();
                 if(!settings.adminPin) settings.adminPin = "1234";
-                updateFloatingWhatsApp();
                 if(document.getElementById('settingWa')) {
                     document.getElementById('settingWa').value = settings.whatsapp;
                 }
@@ -672,12 +689,6 @@
             alert("تم تحديث الرمز السري وحفظه في السحابة بنجاح!");
         }
 
-        function updateFloatingWhatsApp() {
-            const waNumber = settings.whatsapp || "201000000000";
-            const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent('مرحباً فيو للبصريات، أود الاستفسار عن المنتجات لديكم.')}`;
-            document.getElementById('floatingWaBtn').href = waLink;
-        }
-
         function renderProducts() {
             const grid = document.getElementById('productsGrid');
             grid.innerHTML = '';
@@ -719,9 +730,8 @@
 
                 let catName = product.category === 'lenses' ? 'عدسات' : (product.category === 'optical' ? 'طبية' : (product.category === 'kids' ? 'أطفال' : 'شمسية'));
                 let mainImg = imagesList[0] || '';
-                let waNumber = settings.whatsapp || "201000000000";
                 
-                let directWaMsg = encodeURIComponent(
+                let directWaMsg = 
                     `مرحباً فيو للبصريات 👓\n` +
                     `أريد الاستفسار أو طلب هذا المنتج:\n\n` +
                     `🔹 الموديل / الاسم: ${product.name}\n` +
@@ -729,8 +739,7 @@
                     (product.code ? `🔹 الكود: ${product.code}\n` : '') +
                     (product.size ? `🔹 المقاس / التفاصيل: ${product.size}\n` : '') +
                     `🔹 السعر: ${product.price} ج.م\n\n` +
-                    `🖼️ صورة المنتج المرفقة:\n${mainImg}`
-                );
+                    `🖼️ صورة المنتج المرفقة:\n${mainImg}`;
 
                 card.innerHTML = `
                     ${product.isSale === 'yes' ? '<div class="sale-badge">SALE</div>' : ''}
@@ -753,9 +762,9 @@
                             <button class="add-to-cart-btn" onclick='addToCart(${JSON.stringify(product)})'>
                                 <i class="fa-solid fa-cart-plus"></i> أضف
                             </button>
-                            <a href="https://wa.me/${waNumber}?text=${directWaMsg}" target="_blank" class="direct-wa-btn" title="طلب مباشر">
+                            <button onclick='sendToWhatsApp(${JSON.stringify(directWaMsg)})' class="direct-wa-btn" title="طلب مباشر">
                                 <i class="fa-brands fa-whatsapp"></i>
-                            </a>
+                            </button>
                         </div>
                     </div>
                 `;
@@ -883,9 +892,7 @@
                 total: total + " ج.م"
             });
 
-            let waNumber = settings.whatsapp || "201000000000";
-            const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(orderText)}`;
-            window.open(waUrl, '_blank');
+            sendToWhatsApp(orderText);
 
             cart = [];
             updateCartUI();

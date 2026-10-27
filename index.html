@@ -330,16 +330,25 @@
                 </div>
             </div>
 
-            <!-- لوحة تحليلات الزوار -->
+            <!-- لوحة تحليلات الزوار المتقدمة (الفترة + الساعات) -->
             <div style="background:#f8fafc; border: 1px solid #cbd5e1; padding:12px; border-radius:8px; margin-bottom:15px;">
-                <h4 style="color:var(--primary); margin-bottom:8px; font-size:13px;">📊 إحصائيات وتحليلات الزوار</h4>
-                <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
-                    <button class="filter-btn active" onclick="showVisitorReport('all', this)">إجمالي الزيارات</button>
-                    <button class="filter-btn" onclick="showVisitorReport('today', this)">زيارات اليوم</button>
+                <h4 style="color:var(--primary); margin-bottom:8px; font-size:13px;">📊 إحصائيات وزوار متقدمة</h4>
+                
+                <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+                    <button class="filter-btn active" onclick="showVisitorReport('all', this)">كل الزيارات</button>
+                    <button class="filter-btn" onclick="showVisitorReport('today', this)">اليوم</button>
                     <button class="filter-btn" onclick="showVisitorReport('month', this)">هذا الشهر</button>
                 </div>
-                <div id="visitorStatsBox" style="font-weight:700; font-size:13px; color:var(--accent); background:var(--primary); padding:8px; border-radius:6px; text-align:center;">
-                    إجمالي الزيارات المسجلة: 0 زائر
+
+                <!-- خريطة وتحديد نطاق التاريخ المخصص -->
+                <div style="background:#e2e8f0; padding:10px; border-radius:6px; margin-bottom:10px; display:flex; gap:8px; flex-wrap:wrap; align-items:flex-end;">
+                    <div class="form-group" style="flex:1; margin:0;"><label style="font-size:11px;">من تاريخ:</label><input type="date" id="dateFrom" style="padding:4px; font-size:11px;"></div>
+                    <div class="form-group" style="flex:1; margin:0;"><label style="font-size:11px;">إلى تاريخ:</label><input type="date" id="dateTo" style="padding:4px; font-size:11px;"></div>
+                    <button class="save-btn" style="padding:6px 12px; font-size:11px;" onclick="filterByCustomDates()">بحث بالفترة</button>
+                </div>
+
+                <div id="visitorStatsBox" style="font-weight:700; font-size:13px; color:var(--accent); background:var(--primary); padding:10px; border-radius:6px; text-align:center; line-height: 1.8;">
+                    جاري تحميل التحليلات...
                 </div>
             </div>
 
@@ -438,7 +447,6 @@
         let orders = [];
         let currentCategory = 'all';
 
-        // متغيرات Lightbox المتطورة للتكبير واللمس والتصفح
         let currentLightboxImages = [];
         let currentLightboxIndex = 0;
         let lightboxZoom = 1;
@@ -446,26 +454,45 @@
         let isDragging = false;
         let startX = 0, startY = 0;
 
-        // نظام تتبع الزيارات
+        // نظام تتبع الزيارات وتحليلات الساعات
         function trackVisitorAnalytics() {
             let visits = JSON.parse(localStorage.getItem('view_optical_visits') || '[]');
             let now = new Date();
             let visitRecord = {
-                date: now.toISOString().split('T')[0],
-                month: now.toISOString().substring(0, 7),
-                year: now.getFullYear()
+                date: now.toISOString().split('T')[0], // YYYY-MM-DD
+                month: now.toISOString().substring(0, 7), // YYYY-MM
+                year: now.getFullYear(),
+                hour: now.getHours() // 0-23
             };
             visits.push(visitRecord);
             localStorage.setItem('view_optical_visits', JSON.stringify(visits));
         }
         trackVisitorAnalytics();
 
+        // تحليل ذكي لساعات الذروة
+        function getPeakHoursSummary(visitsArray) {
+            if (!visitsArray || visitsArray.length === 0) return "لا توجد زيارات كافية بعد.";
+            let hourCounts = {};
+            visitsArray.forEach(v => {
+                let h = v.hour !== undefined ? v.hour : 12;
+                hourCounts[h] = (hourCounts[h] || 0) + 1;
+            });
+
+            let peakHour = Object.keys(hourCounts).reduce((a, b) => hourCounts[a] > hourCounts[b] ? a : b);
+            let timePeriod = "الصباح (النهار)";
+            if (peakHour >= 12 && peakHour < 17) timePeriod = "بعد الظهر والعصر";
+            else if (peakHour >= 17 && peakHour < 22) timePeriod = "المساء (الذروة الأولى)";
+            else if (peakHour >= 22 || peakHour < 4) timePeriod = "الليل المتأخر";
+
+            return `أكثر ساعة دخول: (${peakHour}:00) — التوقيت المفضل: ${timePeriod}`;
+        }
+
         function showVisitorReport(type, btn) {
             document.querySelectorAll('#adminModal .filter-btn').forEach(b => b.classList.remove('active'));
             if(btn) btn.classList.add('active');
 
             let visits = JSON.parse(localStorage.getItem('view_optical_visits') || '[]');
-            let totalCount = visits.length;
+            let filteredVisits = visits;
             let label = "إجمالي الزيارات المسجلة";
 
             let now = new Date();
@@ -473,17 +500,42 @@
             let currentMonthStr = now.toISOString().substring(0, 7);
 
             if(type === 'today') {
-                totalCount = visits.filter(v => v.date === todayStr).length;
+                filteredVisits = visits.filter(v => v.date === todayStr);
                 label = "زيارات اليوم";
             } else if(type === 'month') {
-                totalCount = visits.filter(v => v.month === currentMonthStr).length;
+                filteredVisits = visits.filter(v => v.month === currentMonthStr);
                 label = "زيارات هذا الشهر";
             }
 
-            document.getElementById('visitorStatsBox').innerText = `${label}: ${totalCount} زائر`;
+            let peakText = getPeakHoursSummary(filteredVisits);
+            document.getElementById('visitorStatsBoxinnerHTML') = '';
+            document.getElementById('visitorStatsBox').innerHTML = `
+                📌 ${label}: <b>${filteredVisits.length}</b> زائر<br>
+                ⏰ ${peakText}
+            `;
         }
 
-        // ضغط الصور تلقائياً لضمان سرعة فائقة
+        function filterByCustomDates() {
+            let fromDate = document.getElementById('dateFrom').value;
+            let toDate = document.getElementById('dateTo').value;
+
+            if(!fromDate || !toDate) {
+                alert("يرجى اختيار تاريخ البداية وتاريخ النهاية أولاً!");
+                return;
+            }
+
+            let visits = JSON.parse(localStorage.getItem('view_optical_visits') || '[]');
+            let filtered = visits.filter(v => v.date >= fromDate && v.date <= toDate);
+
+            let peakText = getPeakHoursSummary(filtered);
+            document.getElementById('visitorStatsBox').innerHTML = `
+                📅 الفترة (${fromDate} إلى ${toDate})<br>
+                📌 عدد الزوار: <b>${filtered.length}</b> زائر<br>
+                ⏰ ${peakText}
+            `;
+        }
+
+        // ضغط الصور تلقائياً لسرعة فائقة
         function compressImageFile(file, callback) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -574,7 +626,6 @@
             }
         });
 
-        // الرمز السري للوحة التحكم
         let clickCount = 0;
         let clickTimer = null;
         function checkAdminSecret(e) {
@@ -622,7 +673,8 @@
         }
 
         function updateFloatingWhatsApp() {
-            const waLink = `https://wa.me/${settings.whatsapp}?text=${encodeURIComponent('مرحباً فيو للبصريات، أود الاستفسار عن المنتجات لديكم.')}`;
+            const waNumber = settings.whatsapp || "201000000000";
+            const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent('مرحباً فيو للبصريات، أود الاستفسار عن المنتجات لديكم.')}`;
             document.getElementById('floatingWaBtn').href = waLink;
         }
 
@@ -667,6 +719,7 @@
 
                 let catName = product.category === 'lenses' ? 'عدسات' : (product.category === 'optical' ? 'طبية' : (product.category === 'kids' ? 'أطفال' : 'شمسية'));
                 let mainImg = imagesList[0] || '';
+                let waNumber = settings.whatsapp || "201000000000";
                 
                 let directWaMsg = encodeURIComponent(
                     `مرحباً فيو للبصريات 👓\n` +
@@ -700,7 +753,7 @@
                             <button class="add-to-cart-btn" onclick='addToCart(${JSON.stringify(product)})'>
                                 <i class="fa-solid fa-cart-plus"></i> أضف
                             </button>
-                            <a href="https://wa.me/${settings.whatsapp}?text=${directWaMsg}" target="_blank" class="direct-wa-btn" title="طلب مباشر">
+                            <a href="https://wa.me/${waNumber}?text=${directWaMsg}" target="_blank" class="direct-wa-btn" title="طلب مباشر">
                                 <i class="fa-brands fa-whatsapp"></i>
                             </a>
                         </div>
@@ -830,7 +883,8 @@
                 total: total + " ج.م"
             });
 
-            const waUrl = `https://wa.me/${settings.whatsapp}?text=${encodeURIComponent(orderText)}`;
+            let waNumber = settings.whatsapp || "201000000000";
+            const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(orderText)}`;
             window.open(waUrl, '_blank');
 
             cart = [];
@@ -839,7 +893,6 @@
             alert("تم إرسال الطلب وحفظه بنجاح!");
         }
 
-        // إضافة وتعديل المنتجات (مع دعم إضافة صور جديدة وتعديل السعر)
         function handleAddGlasses(e) {
             e.preventDefault();
             const editId = document.getElementById('editProductId').value;
@@ -912,7 +965,6 @@
             document.getElementById('saveProductBtn').innerText = "تحديث تعديلات المنتج";
             document.getElementById('cancelEditBtn').style.display = 'block';
 
-            // عرض معاينة الصور الموجودة مسبقاً
             if(p.images) {
                 if(p.images[0]) { document.getElementById('prevG1').src = p.images[0]; document.getElementById('prevG1').style.display = 'block'; }
                 if(p.images[1]) { document.getElementById('prevG2').src = p.images[1]; document.getElementById('prevG2').style.display = 'block'; }
@@ -996,7 +1048,7 @@
             });
         }
 
-        // Lightbox متطور مع دعم التكبير باللمس والسحب والتقليب يمين ويسار
+        // Lightbox Functions
         function openLightbox(imagesArray, index) {
             currentLightboxImages = imagesArray;
             currentLightboxIndex = index;
@@ -1014,7 +1066,6 @@
             panX = 0; panY = 0;
             img.style.transform = `translate(0px, 0px) scale(1)`;
 
-            // تحديث النقاط داخل الـ Lightbox
             const dotsContainer = document.getElementById('lightboxDots');
             dotsContainer.innerHTML = '';
             if(currentLightboxImages.length > 1) {
@@ -1029,7 +1080,7 @@
                 currentLightboxIndex++;
                 updateLightboxImage();
             } else {
-                currentLightboxIndex = 0; // الدورة للبداية
+                currentLightboxIndex = 0;
                 updateLightboxImage();
             }
         }
@@ -1053,7 +1104,6 @@
             document.getElementById('lightboxModal').style.display = 'none';
         }
 
-        // تفاعل السحب باللمس لتغيير الصور أو تحريك الصورة المكبرة
         const lightboxImg = document.getElementById('lightboxImage');
         let touchStartX = 0;
         let touchStartY = 0;
@@ -1087,17 +1137,15 @@
             let touchEndX = e.changedTouches[0].clientX;
             let diffX = touchEndX - touchStartX;
 
-            // إذا كانت الصورة غير مكبرة (Zoom = 1)، السحب يمين/يسار يقلب الصور كاستوديو الموبايل
             if(lightboxZoom === 1) {
                 if (diffX > 50) {
-                    prevLightboxImage(); // سحب لليمين -> الصورة السابقة
+                    prevLightboxImage();
                 } else if (diffX < -50) {
-                    nextLightboxImage(); // سحب لليسار -> الصورة التالية
+                    nextLightboxImage();
                 }
             }
         });
 
-        // دعم تكبير التصغير بالماوس والنقر المزدوج أو الأزرار
         lightboxImg.addEventListener('click', () => {
             if(lightboxZoom === 1) {
                 lightboxZoom = 2.5;

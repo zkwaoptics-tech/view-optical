@@ -481,7 +481,7 @@
             let timePeriod = "الصباح (النهار)";
             if (peakHour >= 12 && peakHour < 17) timePeriod = "بعد الظهر والعصر";
             else if (peakHour >= 17 && peakHour < 22) timePeriod = "المساء (الذروة الأولى)";
-            else if (peakHour >= 22 || peakHour < 4) timePeriod = "الليل المتأخر";
+            else if (peakHour >= 22 || pop < 4) timePeriod = "الليل المتأخر";
 
             return `أكثر ساعة دخول: (${peakHour}:00) — التوقيت المفضل: ${timePeriod}`;
         }
@@ -533,7 +533,7 @@
             `;
         }
 
-        // تم التعديل إلى رابط wa.me المباشر والمضمون 100% لتجنب انقطاع الاتصال
+        // دالة واتساب تعتمد على كود المنتج حصرياً (نظيفة، قصيرة، وتعمل بصاروخ بدون أي أخطاء)
         function sendToWhatsApp(messageText) {
             let rawNumber = settings.whatsapp || "201000000000";
             let cleanNumber = rawNumber.replace(/\D/g, '');
@@ -728,18 +728,14 @@
                     }
                 });
 
-                let catName = product.category === 'lenses' ? 'عدسات' : (product.category === 'optical' ? 'طبية' : (product.category === 'kids' ? 'أطفال' : 'شمسية'));
-                let mainImg = imagesList[0] || '';
-                
+                // رسالة الواتساب البسيطة المعتمدة على الكود فقط
                 let directWaMsg = 
                     `مرحباً فيو للبصريات 👓\n` +
                     `أريد الاستفسار أو طلب هذا المنتج:\n\n` +
+                    `🔹 كود المنتج: ${product.code || 'بدون كود'}\n` +
                     `🔹 الموديل / الاسم: ${product.name}\n` +
-                    `🔹 البراند / الشركة: ${product.brand}\n` +
-                    (product.code ? `🔹 الكود: ${product.code}\n` : '') +
-                    (product.size ? `🔹 المقاس / التفاصيل: ${product.size}\n` : '') +
-                    `🔹 السعر: ${product.price} ج.م\n\n` +
-                    `🖼️ صورة المنتج المرفقة:\n${mainImg}`;
+                    `🔹 البراند: ${product.brand}\n` +
+                    `🔹 السعر: ${product.price} ج.م`;
 
                 card.innerHTML = `
                     ${product.isSale === 'yes' ? '<div class="sale-badge">SALE</div>' : ''}
@@ -878,12 +874,11 @@
             let itemsSummary = [];
             cart.forEach((item, i) => {
                 total += parseFloat(item.price || 0);
-                let itemImg = (item.images && item.images[0]) ? item.images[0] : '';
-                orderText += `${i+1}. ${item.name} (${item.price} ج.م)\n🖼️ ${itemImg}\n\n`;
-                itemsSummary.push(`${item.name} (${item.price}ج.م)`);
+                orderText += `${i+1}. كود: [${item.code || '-'}] - ${item.name} (${item.price} ج.م)\n`;
+                itemsSummary.push(`[${item.code || '-'}] ${item.name} (${item.price}ج.م)`);
             });
 
-            orderText += `💰 الإجمالي الكلي: ${total} ج.م`;
+            orderText += `\n💰 الإجمالي الكلي: ${total} ج.م`;
 
             db.ref('orders').push({
                 name: name,

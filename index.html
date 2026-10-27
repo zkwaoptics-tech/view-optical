@@ -79,35 +79,47 @@
         }
         .hero h1 { font-size: 30px; color: var(--accent); margin-bottom: 5px; }
 
-        .container { max-width: 1200px; margin: 25px auto; padding: 0 20px; }
+        .container { max-width: 1200px; margin: 25px auto; padding: 0 10px; }
 
         .filters-container { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; }
-        .categories-filter { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .categories-filter { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
         .filter-btn {
-            background: var(--white); border: 1px solid #cbd5e1; padding: 8px 18px; border-radius: 30px;
-            cursor: pointer; font-weight: 700; transition: 0.3s;
+            background: var(--white); border: 1px solid #cbd5e1; padding: 6px 14px; border-radius: 30px;
+            cursor: pointer; font-weight: 700; font-size: 13px; transition: 0.3s;
         }
         .filter-btn.active, .filter-btn:hover { background: var(--primary); color: var(--white); border-color: var(--primary); }
 
         .secondary-filters { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
         .secondary-filters select, .secondary-filters input {
-            padding: 8px 14px; border-radius: 8px; border: 1px solid #cbd5e1; font-weight: 700;
+            padding: 8px 14px; border-radius: 8px; border: 1px solid #cbd5e1; font-weight: 700; font-size: 13px;
         }
 
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+        /* عرض 3 أعمدة (شبابيك) للمنتجات بجانب بعضها */
+        .products-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 10px; 
+        }
+        @media (max-width: 768px) {
+            .products-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+            .product-info { padding: 8px !important; }
+            .product-title { font-size: 13px !important; }
+            .product-price { font-size: 14px !important; }
+            .add-to-cart-btn, .direct-wa-btn { padding: 6px !important; font-size: 11px !important; }
+        }
+
         .product-card {
-            background: var(--white); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            background: var(--white); border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             display: flex; flex-direction: column; position: relative;
         }
         .sale-badge {
-            position: absolute; top: 10px; right: 10px; background: var(--red); color: var(--white);
-            padding: 3px 8px; border-radius: 6px; font-weight: 900; font-size: 11px; z-index: 10;
+            position: absolute; top: 6px; right: 6px; background: var(--red); color: var(--white);
+            padding: 2px 5px; border-radius: 4px; font-weight: 900; font-size: 9px; z-index: 10;
         }
 
-        /* تحسين المقاسات ومعرض الصور بالسحب للصور */
         .product-images { 
             position: relative; 
-            height: 220px; 
+            height: 140px; 
             background: #f1f5f9; 
             display: flex; 
             overflow-x: auto; 
@@ -127,31 +139,31 @@
             display: block;
             margin: 0 auto;
         }
-        .img-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; z-index: 5; pointer-events: none; }
-        .dot { width: 7px; height: 7px; background: rgba(0,0,0,0.3); border-radius: 50%; }
+        .img-dots { position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); display: flex; gap: 3px; z-index: 5; pointer-events: none; }
+        .dot { width: 5px; height: 5px; background: rgba(0,0,0,0.3); border-radius: 50%; }
         .dot.active { background: var(--accent); }
 
-        .product-info { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
-        .product-meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--gray); font-weight: 700; margin-bottom: 4px; }
-        .product-code { font-size: 12px; color: var(--accent); background: var(--primary); padding: 2px 6px; border-radius: 4px; font-weight: 900; display: inline-block; }
+        .product-info { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-meta { display: flex; justify-content: space-between; font-size: 10px; color: var(--gray); font-weight: 700; margin-bottom: 2px; }
+        .product-code { font-size: 10px; color: var(--accent); background: var(--primary); padding: 1px 4px; border-radius: 3px; font-weight: 900; display: inline-block; }
         
-        .product-title { font-size: 16px; font-weight: 700; margin: 6px 0 2px 0; color: var(--primary); }
-        .product-size { font-size: 12px; color: var(--gray); font-weight: 600; margin-bottom: 8px; }
+        .product-title { font-size: 14px; font-weight: 700; margin: 4px 0 2px 0; color: var(--primary); }
+        .product-size { font-size: 10px; color: var(--gray); font-weight: 600; margin-bottom: 6px; }
 
-        .price-box { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; }
-        .product-price { font-size: 18px; font-weight: 900; color: var(--accent); }
-        .old-price { font-size: 13px; color: var(--gray); text-decoration: line-through; }
+        .price-box { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
+        .product-price { font-size: 15px; font-weight: 900; color: var(--accent); }
+        .old-price { font-size: 11px; color: var(--gray); text-decoration: line-through; }
 
-        .card-actions { display: flex; gap: 8px; margin-top: auto; }
+        .card-actions { display: flex; gap: 4px; margin-top: auto; }
         .add-to-cart-btn {
-            flex: 1; background: var(--primary); color: var(--white); border: none; padding: 10px;
-            border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.3s;
+            flex: 1; background: var(--primary); color: var(--white); border: none; padding: 8px;
+            border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; transition: 0.3s;
         }
         .add-to-cart-btn:hover { background: var(--accent); color: var(--primary); }
 
         .direct-wa-btn {
-            background: var(--green); color: var(--white); border: none; padding: 10px 12px;
-            border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; text-decoration: none;
+            background: var(--green); color: var(--white); border: none; padding: 8px 10px;
+            border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; text-decoration: none;
         }
 
         .modal {
@@ -159,47 +171,54 @@
             background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center;
         }
         .modal-content {
-            background: var(--white); width: 90%; max-width: 850px; max-height: 90vh;
-            border-radius: 12px; padding: 25px; overflow-y: auto; position: relative;
+            background: var(--white); width: 95%; max-width: 850px; max-height: 90vh;
+            border-radius: 12px; padding: 20px; overflow-y: auto; position: relative;
         }
         .close-modal { position: absolute; top: 15px; left: 15px; font-size: 22px; cursor: pointer; color: var(--gray); }
-        .modal-title { font-size: 20px; font-weight: 900; margin-bottom: 15px; color: var(--primary); border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
+        .modal-title { font-size: 18px; font-weight: 900; margin-bottom: 15px; color: var(--primary); border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
 
         .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
-        .form-group label { font-weight: 700; font-size: 13px; }
-        .form-group input, .form-group select { padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; }
+        .form-group label { font-weight: 700; font-size: 12px; }
+        .form-group input, .form-group select { padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; }
         .file-input-group { background: #fff; padding: 8px; border: 1px dashed var(--accent); border-radius: 6px; }
-        .img-preview { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; display: none; margin-top: 5px; }
+        .img-preview { width: 45px; height: 45px; object-fit: cover; border-radius: 4px; display: none; margin-top: 5px; }
 
-        .save-btn { background: var(--primary); color: var(--accent); border: none; padding: 10px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .save-btn { background: var(--primary); color: var(--accent); border: none; padding: 10px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 10px; background: var(--white); }
-        th, td { padding: 8px; text-align: right; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
+        th, td { padding: 8px; text-align: right; border-bottom: 1px solid #f1f5f9; font-size: 12px; }
         th { background: #e2e8f0; font-weight: 700; }
         .delete-btn { background: var(--red); color: var(--white); border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-weight: 700; }
+        .edit-btn { background: #0284c7; color: var(--white); border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-weight: 700; margin-left: 4px; }
 
         .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
         .checkout-box { background: #f8fafc; padding: 15px; border-radius: 8px; margin-top: 15px; }
 
-        /* Lightbox تكبير */
+        /* Lightbox المتطور للتكبير والسحب بين الصور باللمس */
         .lightbox-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.95); z-index: 3000; justify-content: center; align-items: center;
-            flex-direction: column; overflow: hidden;
+            flex-direction: column; overflow: hidden; touch-action: none;
         }
         .lightbox-container {
-            width: 100%; height: 85vh; display: flex; justify-content: center; align-items: center; overflow: auto; position: relative;
+            width: 100%; height: 85vh; display: flex; justify-content: center; align-items: center; position: relative; overflow: hidden;
         }
         .lightbox-img {
-            max-width: none; max-height: none; width: auto; height: auto;
-            transition: transform 0.1s ease; cursor: grab; border-radius: 4px;
+            max-width: 90%; max-height: 85vh; object-fit: contain;
+            transition: transform 0.1s ease; cursor: grab; border-radius: 4px; user-select: none;
         }
         .lightbox-img:active { cursor: grabbing; }
         .lightbox-close { position: absolute; top: 20px; left: 25px; color: var(--white); font-size: 30px; cursor: pointer; z-index: 3010; background: rgba(0,0,0,0.5); padding: 5px 12px; border-radius: 50%; }
-        .lightbox-zoom-controls {
-            position: absolute; bottom: 20px; display: flex; gap: 10px; background: rgba(0,0,0,0.6); padding: 10px 20px; border-radius: 30px; z-index: 3010;
+        .lightbox-nav {
+            position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); color: white; border: none; font-size: 24px; padding: 12px 16px; cursor: pointer; z-index: 3010; border-radius: 50%;
         }
-        .zoom-btn { background: var(--accent); color: var(--primary); border: none; padding: 6px 14px; border-radius: 6px; font-weight: 900; cursor: pointer; }
+        .lightbox-prev { right: 15px; }
+        .lightbox-next { left: 15px; }
+        .lightbox-dots {
+            position: absolute; bottom: 20px; display: flex; gap: 8px; z-index: 3010;
+        }
+        .lightbox-dot { width: 10px; height: 10px; background: rgba(255,255,255,0.4); border-radius: 50%; cursor: pointer; }
+        .lightbox-dot.active { background: var(--accent); }
     </style>
 </head>
 <body>
@@ -231,34 +250,32 @@
         <div class="filters-container">
             <div class="categories-filter">
                 <button class="filter-btn active" onclick="filterCategory('all', this)">جميع المنتجات</button>
-                <button class="filter-btn" onclick="filterCategory('sunglasses', this)">🕶️ نظارات شمسية</button>
-                <button class="filter-btn" onclick="filterCategory('optical', this)">👓 نظارات طبية</button>
-                <button class="filter-btn" onclick="filterCategory('kids', this)">👶 نظارات أطفال</button>
-                <button class="filter-btn" onclick="filterCategory('lenses', this)">👁️ عدسات لاصقة</button>
-                <button class="filter-btn" onclick="filterCategory('sale', this)" style="color: var(--red);">🔥 العروض (Sale)</button>
+                <button class="filter-btn" onclick="filterCategory('sunglasses', this)">🕶️ شمسية</button>
+                <button class="filter-btn" onclick="filterCategory('optical', this)">👓 طبية</button>
+                <button class="filter-btn" onclick="filterCategory('kids', this)">👶 أطفال</button>
+                <button class="filter-btn" onclick="filterCategory('lenses', this)">👁️ عدسات</button>
+                <button class="filter-btn" onclick="filterCategory('sale', this)" style="color: var(--red);">🔥 عروض</button>
             </div>
             <div class="secondary-filters">
                 <select id="brandFilter" onchange="applyFilters()">
-                    <option value="all">جميع الماركات / شركات العدسات</option>
+                    <option value="all">جميع الماركات</option>
                 </select>
-                <input type="text" id="searchInput" placeholder="ابحث بالكود، اللون، أو الموديل..." oninput="applyFilters()" style="width: 240px;">
+                <input type="text" id="searchInput" placeholder="ابحث بالكود أو الموديل..." oninput="applyFilters()" style="width: 200px;">
             </div>
         </div>
 
         <div class="products-grid" id="productsGrid"></div>
     </div>
 
-    <!-- Lightbox تكبير -->
+    <!-- Lightbox المتطور للتكبير والتصفح باللمس -->
     <div class="lightbox-modal" id="lightboxModal">
         <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <button class="lightbox-nav lightbox-prev" onclick="prevLightboxImage()"><i class="fa-solid fa-chevron-right"></i></button>
+        <button class="lightbox-nav lightbox-next" onclick="nextLightboxImage()"><i class="fa-solid fa-chevron-left"></i></button>
         <div class="lightbox-container" id="lightboxContainer">
-            <img id="lightboxImage" class="lightbox-img" src="" alt="تكبير الصورة">
+            <img id="lightboxImage" class="lightbox-img" src="" alt="عرض الصورة">
         </div>
-        <div class="lightbox-zoom-controls">
-            <button class="zoom-btn" onclick="zoomIn()"><i class="fa-solid fa-magnifying-glass-plus"></i> تكبير</button>
-            <button class="zoom-btn" onclick="zoomOut()"><i class="fa-solid fa-magnifying-glass-minus"></i> تصغير</button>
-            <button class="zoom-btn" onclick="resetZoom()">إعادة ضبط</button>
-        </div>
+        <div class="lightbox-dots" id="lightboxDots"></div>
     </div>
 
     <!-- نافذة السلة والطلب -->
@@ -269,7 +286,7 @@
             <div id="cartItemsList"></div>
             
             <div class="checkout-box" id="checkoutSection" style="display:none;">
-                <h4 style="margin-bottom:10px;">بيانات التواصل لإتمام الطلب:</h4>
+                <h4 style="margin-bottom:10px; font-size:14px;">بيانات التواصل لإتمام الطلب:</h4>
                 <div class="form-group">
                     <label>الاسم بالكامل</label>
                     <input type="text" id="custName" placeholder="أدخل اسمك الكريم" required>
@@ -278,7 +295,7 @@
                     <label>رقم التليفون / الموبايل</label>
                     <input type="text" id="custPhone" placeholder="أدخل رقم موبايلك" required>
                 </div>
-                <div style="font-weight:900; font-size:16px; margin: 10px 0; color:var(--primary);">
+                <div style="font-weight:900; font-size:15px; margin: 10px 0; color:var(--primary);">
                     الإجمالي: <span id="cartTotal">0</span> ج.م
                 </div>
                 <button class="save-btn" style="background:var(--green); color:var(--white); width:100%;" onclick="submitOrder()">
@@ -295,100 +312,84 @@
             <div class="modal-title">لوحة تحكم فيو للبصريات (سحابي ☁️)</div>
             
             <!-- إعدادات الواتساب -->
-            <div style="background:#f1f5f9; padding:15px; border-radius:8px; margin-bottom:20px;">
-                <h4>إعدادات الواتساب</h4>
-                <div style="display:flex; gap:10px; margin-top:8px;">
-                    <input type="text" id="settingWa" placeholder="رقم الواتساب 2010xxxx" style="flex:1; padding:8px; border-radius:6px; border:1px solid #cbd5e1;">
+            <div style="background:#f1f5f9; padding:12px; border-radius:8px; margin-bottom:15px;">
+                <h4 style="font-size:13px;">إعدادات الواتساب</h4>
+                <div style="display:flex; gap:10px; margin-top:6px;">
+                    <input type="text" id="settingWa" placeholder="رقم الواتساب 2010xxxx" style="flex:1; padding:6px; border-radius:6px; border:1px solid #cbd5e1;">
                     <button class="save-btn" onclick="saveSettings()">حفظ الرقم</button>
                 </div>
             </div>
 
             <!-- تغيير الرمز السري -->
-            <div style="background:#e0f2fe; padding:15px; border-radius:8px; margin-bottom:20px; border: 1px solid #bae6fd;">
-                <h4 style="color:#0369a1;">🔐 تغيير الرمز السري للوحة التحكم</h4>
-                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-top:8px;">
-                    <div class="form-group"><label>الرمز السري القديم</label><input type="password" id="oldPin" placeholder="الرمز القديم"></div>
-                    <div class="form-group"><label>الرمز السري الجديد (حروف/رموز)</label><input type="text" id="newPin" placeholder="الرمز الجديد"></div>
-                    <div class="form-group" style="display:flex; align-items:flex-end;"><button class="save-btn" style="background:#0284c7; width:100%;" onclick="changeAdminPin()">تحديث الرمز</button></div>
+            <div style="background:#e0f2fe; padding:12px; border-radius:8px; margin-bottom:15px; border: 1px solid #bae6fd;">
+                <h4 style="color:#0369a1; font-size:13px;">🔐 تغيير الرمز السري للوحة التحكم</h4>
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px; margin-top:6px;">
+                    <div class="form-group"><label>الرمز القديم</label><input type="password" id="oldPin" placeholder="القديم"></div>
+                    <div class="form-group"><label>الرمز الجديد</label><input type="text" id="newPin" placeholder="الجديد"></div>
+                    <div class="form-group" style="display:flex; align-items:flex-end;"><button class="save-btn" style="background:#0284c7; width:100%; padding:8px;" onclick="changeAdminPin()">تحديث</button></div>
                 </div>
             </div>
 
             <!-- لوحة تحليلات الزوار -->
-            <div style="background:#f8fafc; border: 1px solid #cbd5e1; padding:15px; border-radius:8px; margin-bottom:20px;">
-                <h4 style="color:var(--primary); margin-bottom:10px;">📊 إحصائيات وتحليلات الزوار</h4>
-                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+            <div style="background:#f8fafc; border: 1px solid #cbd5e1; padding:12px; border-radius:8px; margin-bottom:15px;">
+                <h4 style="color:var(--primary); margin-bottom:8px; font-size:13px;">📊 إحصائيات وتحليلات الزوار</h4>
+                <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
                     <button class="filter-btn active" onclick="showVisitorReport('all', this)">إجمالي الزيارات</button>
                     <button class="filter-btn" onclick="showVisitorReport('today', this)">زيارات اليوم</button>
                     <button class="filter-btn" onclick="showVisitorReport('month', this)">هذا الشهر</button>
                 </div>
-                <div id="visitorStatsBox" style="font-weight:700; font-size:15px; color:var(--accent); background:var(--primary); padding:10px; border-radius:6px; text-align:center;">
+                <div id="visitorStatsBox" style="font-weight:700; font-size:13px; color:var(--accent); background:var(--primary); padding:8px; border-radius:6px; text-align:center;">
                     إجمالي الزيارات المسجلة: 0 زائر
                 </div>
             </div>
 
-            <!-- نموذج إضافة النظارات -->
-            <div style="background:#f1f5f9; padding:15px; border-radius:8px; margin-bottom:20px;">
-                <h4>إضافة نظارة جديدة</h4>
+            <!-- نموذج إضافة / تعديل النظارات -->
+            <div style="background:#f1f5f9; padding:12px; border-radius:8px; margin-bottom:15px;">
+                <h4 id="formBoxTitle" style="font-size:13px;">إضافة نظارة جديدة</h4>
                 <form id="addGlassesForm" onsubmit="handleAddGlasses(event)">
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                        <div class="form-group"><label>كود النظارة</label><input type="text" id="gCode" required placeholder="مثال: V-101"></div>
-                        <div class="form-group"><label>اسم الموديل</label><input type="text" id="gName" required placeholder="مثال: RayBan Classic"></div>
+                    <input type="hidden" id="editProductId" value="">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                        <div class="form-group"><label>كود النظارة</label><input type="text" id="gCode" required placeholder="V-101"></div>
+                        <div class="form-group"><label>اسم الموديل</label><input type="text" id="gName" required placeholder="RayBan"></div>
                     </div>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
-                        <div class="form-group"><label>البراند</label><input type="text" id="gBrand" required placeholder="RayBan, Gucci..."></div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
+                        <div class="form-group"><label>البراند</label><input type="text" id="gBrand" required placeholder="Boss"></div>
                         <div class="form-group">
                             <label>القسم</label>
                             <select id="gCategory">
-                                <option value="sunglasses">نظارة شمسية</option>
-                                <option value="optical">نظارة طبية</option>
-                                <option value="kids">نظارة أطفال</option>
+                                <option value="sunglasses">شمسية</option>
+                                <option value="optical">طبية</option>
+                                <option value="kids">أطفال</option>
+                                <option value="lenses">عدسات</option>
                             </select>
                         </div>
-                        <div class="form-group"><label>المقاس والأبعاد</label><input type="text" id="gSize" placeholder="54-18-140"></div>
+                        <div class="form-group"><label>المقاس</label><input type="text" id="gSize" placeholder="54-18"></div>
                     </div>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
                         <div class="form-group"><label>Sale؟</label><select id="gIsSale"><option value="no">لا</option><option value="yes">نعم</option></select></div>
                         <div class="form-group"><label>السعر (ج.م)</label><input type="number" id="gPrice" required placeholder="1200"></div>
                         <div class="form-group"><label>السعر القديم</label><input type="number" id="gOldPrice" placeholder="1500"></div>
                     </div>
-                    <div class="form-group file-input-group"><label>📸 صورة أساسية (تضغط أوتوماتيك للسرعة):</label><input type="file" id="gImg1" accept="image/*" required onchange="previewImageCompressed(this, 'prevG1')"><img id="prevG1" class="img-preview"></div>
-                    <div class="form-group file-input-group"><label>📸 صورة 2 (اختياري):</label><input type="file" id="gImg2" accept="image/*" onchange="previewImageCompressed(this, 'prevG2')"><img id="prevG2" class="img-preview"></div>
-                    <div class="form-group file-input-group"><label>📸 صورة 3 (اختياري):</label><input type="file" id="gImg3" accept="image/*" onchange="previewImageCompressed(this, 'prevG3')"><img id="prevG3" class="img-preview"></div>
-                    <button type="submit" class="save-btn" style="margin-top:10px;">حفظ النظارة بالسحابة</button>
+                    <div class="form-group file-input-group"><label>📸 صورة 1:</label><input type="file" id="gImg1" accept="image/*" onchange="previewImageCompressed(this, 'prevG1')"><img id="prevG1" class="img-preview"></div>
+                    <div class="form-group file-input-group"><label>📸 صورة 2:</label><input type="file" id="gImg2" accept="image/*" onchange="previewImageCompressed(this, 'prevG2')"><img id="prevG2" class="img-preview"></div>
+                    <div class="form-group file-input-group"><label>📸 صورة 3:</label><input type="file" id="gImg3" accept="image/*" onchange="previewImageCompressed(this, 'prevG3')"><img id="prevG3" class="img-preview"></div>
+                    
+                    <div style="display:flex; gap:8px; margin-top:8px;">
+                        <button type="submit" class="save-btn" style="flex:1;" id="saveProductBtn">حفظ النظارة بالسحابة</button>
+                        <button type="button" class="save-btn" style="background:var(--gray); display:none;" id="cancelEditBtn" onclick="resetProductForm()">إلغاء التعديل</button>
+                    </div>
                 </form>
             </div>
 
-            <!-- نموذج إضافة العدسات -->
-            <div style="background:#fef3c7; padding:15px; border-radius:8px; margin-bottom:20px;">
-                <h4>إضافة عدسات لاصقة (كود اختياري)</h4>
-                <form id="addLensForm" onsubmit="handleAddLens(event)">
-                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
-                        <div class="form-group"><label>اسم الشركة (البراند)</label><input type="text" id="lBrand" required placeholder="Dahab / Bella"></div>
-                        <div class="form-group"><label>اسم اللون / الوصف</label><input type="text" id="lName" required placeholder="Luminaire Gray"></div>
-                        <div class="form-group"><label>كود العدسة (اختياري)</label><input type="text" id="lCode" placeholder="اختياري"></div>
-                    </div>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                        <div class="form-group"><label>المدة / تفاصيل</label><input type="text" id="lSize" placeholder="سنوية / شهرية"></div>
-                        <div class="form-group"><label>السعر (ج.م)</label><input type="number" id="lPrice" required placeholder="650"></div>
-                    </div>
-                    <div class="form-group file-input-group" style="background:#fff;">
-                        <label>📸 صورة اللون:</label>
-                        <input type="file" id="lImg" accept="image/*" required onchange="previewImageCompressed(this, 'prevL')">
-                        <img id="prevL" class="img-preview">
-                    </div>
-                    <button type="submit" class="save-btn" style="background:var(--accent); color:var(--primary); margin-top:10px;">إضافة لون العدسة بالسحابة</button>
-                </form>
-            </div>
-
-            <!-- إدارة وحذف -->
-            <div style="background:#f1f5f9; padding:15px; border-radius:8px; margin-bottom:20px;">
-                <h4>البحث والحذف السريع (من السحابة)</h4>
-                <input type="text" id="adminSearchInput" oninput="renderAdminTable()" placeholder="ابحث بالكود أو الموديل..." style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; margin-top:8px;">
+            <!-- إدارة وحذف وتعديل -->
+            <div style="background:#f1f5f9; padding:12px; border-radius:8px; margin-bottom:15px;">
+                <h4 style="font-size:13px;">البحث والتعديل السريع (من السحابة)</h4>
+                <input type="text" id="adminSearchInput" oninput="renderAdminTable()" placeholder="ابحث بالكود أو الموديل..." style="width:100%; padding:6px; border-radius:6px; border:1px solid #cbd5e1; margin-top:6px; font-size:12px;">
                 <table>
                     <thead>
                         <tr>
                             <th>الكود / البراند</th>
-                            <th>الاسم / اللون</th>
+                            <th>الاسم</th>
                             <th>السعر</th>
                             <th>إجراء</th>
                         </tr>
@@ -398,8 +399,8 @@
             </div>
 
             <!-- سجل الطلبات -->
-            <div style="background:#f1f5f9; padding:15px; border-radius:8px;">
-                <h4>سجل الطلبات والعملاء (من السحابة)</h4>
+            <div style="background:#f1f5f9; padding:12px; border-radius:8px;">
+                <h4 style="font-size:13px;">سجل الطلبات والعملاء (من السحابة)</h4>
                 <table>
                     <thead>
                         <tr>
@@ -428,7 +429,6 @@
             appId: "1:430499491452:web:91186be3f4e7e6b80b63f9"
         };
 
-        // تهيئة فايربيز
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
@@ -438,19 +438,22 @@
         let orders = [];
         let currentCategory = 'all';
 
-        let currentZoom = 1;
-        let imgElement = document.getElementById('lightboxImage');
+        // متغيرات Lightbox المتطورة للتكبير واللمس والتصفح
+        let currentLightboxImages = [];
+        let currentLightboxIndex = 0;
+        let lightboxZoom = 1;
+        let panX = 0, panY = 0;
+        let isDragging = false;
+        let startX = 0, startY = 0;
 
-        // نظام تتبع الزيارات وتحليلات الوقت
+        // نظام تتبع الزيارات
         function trackVisitorAnalytics() {
             let visits = JSON.parse(localStorage.getItem('view_optical_visits') || '[]');
             let now = new Date();
             let visitRecord = {
-                date: now.toISOString().split('T')[0], // YYYY-MM-DD
-                month: now.toISOString().substring(0, 7), // YYYY-MM
-                year: now.getFullYear(),
-                dayOfWeek: now.toLocaleString('en-US', { weekday: 'long' }),
-                hour: now.getHours()
+                date: now.toISOString().split('T')[0],
+                month: now.toISOString().substring(0, 7),
+                year: now.getFullYear()
             };
             visits.push(visitRecord);
             localStorage.setItem('view_optical_visits', JSON.stringify(visits));
@@ -470,19 +473,17 @@
             let currentMonthStr = now.toISOString().substring(0, 7);
 
             if(type === 'today') {
-                let todayVisits = visits.filter(v => v.date === todayStr);
-                totalCount = todayVisits.length;
+                totalCount = visits.filter(v => v.date === todayStr).length;
                 label = "زيارات اليوم";
             } else if(type === 'month') {
-                let monthVisits = visits.filter(v => v.month === currentMonthStr);
-                totalCount = monthVisits.length;
+                totalCount = visits.filter(v => v.month === currentMonthStr).length;
                 label = "زيارات هذا الشهر";
             }
 
             document.getElementById('visitorStatsBox').innerText = `${label}: ${totalCount} زائر`;
         }
 
-        // دالة لضغط الصور تلقائياً قبل رفعها لضمان سرعة صاروخية للموقع
+        // ضغط الصور تلقائياً لضمان سرعة فائقة
         function compressImageFile(file, callback) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -495,15 +496,9 @@
                     const MAX_HEIGHT = 800;
 
                     if (width > height) {
-                        if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
-                            width = MAX_WIDTH;
-                        }
+                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
                     } else {
-                        if (height > MAX_HEIGHT) {
-                            width *= MAX_HEIGHT / height;
-                            height = MAX_HEIGHT;
-                        }
+                        if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
                     }
                     canvas.width = width;
                     canvas.height = height;
@@ -527,7 +522,7 @@
             }
         }
 
-        // جلب البيانات من السحابة لحظياً (Realtime Sync)
+        // جلب البيانات من السحابة
         db.ref('settings').on('value', (snapshot) => {
             if (snapshot.exists()) {
                 settings = snapshot.val();
@@ -579,7 +574,7 @@
             }
         });
 
-        // نظام الضغطات السرية (3 ضغطات على اللوجو لفتح لوحة التحكم)
+        // الرمز السري للوحة التحكم
         let clickCount = 0;
         let clickTimer = null;
         function checkAdminSecret(e) {
@@ -661,16 +656,17 @@
 
                 let imgsHtml = '';
                 let dotsHtml = '';
-                if(product.images && Array.isArray(product.images)) {
-                    product.images.forEach((img, idx) => {
-                        imgsHtml += `<img src="${img}" onclick="openLightbox('${img}')">`;
-                        if (product.images.length > 1) {
-                            dotsHtml += `<span class="dot ${idx === 0 ? 'active' : ''}"></span>`;
-                        }
-                    });
-                }
+                let imagesList = (product.images && Array.isArray(product.images)) ? product.images : [product.image || ''];
 
-                let catName = product.category === 'lenses' ? 'عدسات لاصقة' : (product.category === 'optical' ? 'طبية' : (product.category === 'kids' ? 'أطفال' : 'شمسية'));
+                imagesList.forEach((img, idx) => {
+                    imgsHtml += `<img src="${img}" onclick='openLightbox(${JSON.stringify(imagesList)}, ${idx})'>`;
+                    if (imagesList.length > 1) {
+                        dotsHtml += `<span class="dot ${idx === 0 ? 'active' : ''}"></span>`;
+                    }
+                });
+
+                let catName = product.category === 'lenses' ? 'عدسات' : (product.category === 'optical' ? 'طبية' : (product.category === 'kids' ? 'أطفال' : 'شمسية'));
+                let mainImg = imagesList[0] || '';
                 
                 let directWaMsg = encodeURIComponent(
                     `مرحباً فيو للبصريات 👓\n` +
@@ -680,7 +676,7 @@
                     (product.code ? `🔹 الكود: ${product.code}\n` : '') +
                     (product.size ? `🔹 المقاس / التفاصيل: ${product.size}\n` : '') +
                     `🔹 السعر: ${product.price} ج.م\n\n` +
-                    `🖼️ رابط معاينة صورة المنتج:\n${product.images && product.images[0] ? product.images[0] : ''}`
+                    `🖼️ صورة المنتج المرفقة:\n${mainImg}`
                 );
 
                 card.innerHTML = `
@@ -691,20 +687,20 @@
                     </div>
                     <div class="product-info">
                         <div class="product-meta">
-                            <span>${product.brand} (${catName})</span>
-                            ${product.code ? `<span class="product-code">كود: ${product.code}</span>` : ''}
+                            <span>${product.brand}</span>
+                            ${product.code ? `<span class="product-code">${product.code}</span>` : ''}
                         </div>
                         <h3 class="product-title">${product.name}</h3>
-                        ${product.size ? `<div class="product-size">المقاس: ${product.size}</div>` : ''}
+                        ${product.size ? `<div class="product-size">${product.size}</div>` : ''}
                         <div class="price-box">
                             <span class="product-price">${product.price} ج.م</span>
                             ${product.oldPrice ? `<span class="old-price">${product.oldPrice} ج.م</span>` : ''}
                         </div>
                         <div class="card-actions">
                             <button class="add-to-cart-btn" onclick='addToCart(${JSON.stringify(product)})'>
-                                <i class="fa-solid fa-cart-plus"></i> أضف للسلة
+                                <i class="fa-solid fa-cart-plus"></i> أضف
                             </button>
-                            <a href="https://wa.me/${settings.whatsapp}?text=${directWaMsg}" target="_blank" class="direct-wa-btn" title="طلب مباشر عبر واتساب">
+                            <a href="https://wa.me/${settings.whatsapp}?text=${directWaMsg}" target="_blank" class="direct-wa-btn" title="طلب مباشر">
                                 <i class="fa-brands fa-whatsapp"></i>
                             </a>
                         </div>
@@ -714,7 +710,6 @@
             });
         }
 
-        // تحديث نقاط التقليب أوتوماتيكياً عند السحب بلمس الأصبع
         function updateActiveDot(productId) {
             const container = document.getElementById(`slider-${productId}`);
             if(!container) return;
@@ -736,7 +731,7 @@
                 if(p.brand && !brands.includes(p.brand)) brands.push(p.brand);
             });
 
-            select.innerHTML = '<option value="all">جميع الماركات / شركات العدسات</option>';
+            select.innerHTML = '<option value="all">جميع الماركات</option>';
             brands.forEach(b => {
                 select.innerHTML += `<option value="${b}">${b}</option>`;
             });
@@ -781,8 +776,8 @@
                     list.innerHTML += `
                         <div class="cart-item">
                             <div>
-                                <h4 style="font-size:14px; color:var(--primary);">${item.name}</h4>
-                                <span style="font-size:12px; color:var(--accent); font-weight:900;">${item.price} ج.م</span>
+                                <h4 style="font-size:13px; color:var(--primary);">${item.name}</h4>
+                                <span style="font-size:11px; color:var(--accent); font-weight:900;">${item.price} ج.م</span>
                             </div>
                             <button class="delete-btn" onclick="removeFromCart(${index})">حذف</button>
                         </div>
@@ -800,13 +795,8 @@
             openCartModal();
         }
 
-        function closeCartModal() {
-            document.getElementById('cartModal').style.display = 'none';
-        }
-
-        function closeAdminModal() {
-            document.getElementById('adminModal').style.display = 'none';
-        }
+        function closeCartModal() { document.getElementById('cartModal').style.display = 'none'; }
+        function closeAdminModal() { document.getElementById('adminModal').style.display = 'none'; }
 
         function submitOrder() {
             const name = document.getElementById('custName').value.trim();
@@ -826,13 +816,13 @@
             let itemsSummary = [];
             cart.forEach((item, i) => {
                 total += parseFloat(item.price || 0);
-                orderText += `${i+1}. ${item.name} (${item.brand}) - ${item.price} ج.م\n`;
+                let itemImg = (item.images && item.images[0]) ? item.images[0] : '';
+                orderText += `${i+1}. ${item.name} (${item.price} ج.م)\n🖼️ ${itemImg}\n\n`;
                 itemsSummary.push(`${item.name} (${item.price}ج.م)`);
             });
 
-            orderText += `\n💰 الإجمالي الكلي: ${total} ج.م`;
+            orderText += `💰 الإجمالي الكلي: ${total} ج.م`;
 
-            // حفظ الطلب في قاعدة البيانات السحابية
             db.ref('orders').push({
                 name: name,
                 phone: phone,
@@ -849,9 +839,10 @@
             alert("تم إرسال الطلب وحفظه بنجاح!");
         }
 
-        // إضافة نظارة جديدة
+        // إضافة وتعديل المنتجات (مع دعم إضافة صور جديدة وتعديل السعر)
         function handleAddGlasses(e) {
             e.preventDefault();
+            const editId = document.getElementById('editProductId').value;
             const code = document.getElementById('gCode').value.trim();
             const name = document.getElementById('gName').value.trim();
             const brand = document.getElementById('gBrand').value.trim();
@@ -861,12 +852,22 @@
             const price = document.getElementById('gPrice').value.trim();
             const oldPrice = document.getElementById('gOldPrice').value.trim();
 
-            const img1 = document.getElementById('gImg1').dataset.compressed;
-            const img2 = document.getElementById('gImg2').dataset.compressed;
-            const img3 = document.getElementById('gImg3').dataset.compressed;
+            const img1Input = document.getElementById('gImg1').dataset.compressed;
+            const img2Input = document.getElementById('gImg2').dataset.compressed;
+            const img3Input = document.getElementById('gImg3').dataset.compressed;
+
+            let existingImages = [];
+            if(editId) {
+                let existingProd = products.find(p => p.id === editId);
+                if(existingProd && existingProd.images) existingImages = existingProd.images;
+            }
+
+            let img1 = img1Input || existingImages[0] || null;
+            let img2 = img2Input || existingImages[1] || null;
+            let img3 = img3Input || existingImages[2] || null;
 
             if(!img1) {
-                alert("يرجى اختيار الصورة الأساسية للنظارة!");
+                alert("يرجى اختيار الصورة الأساسية للنظارة على الأقل!");
                 return;
             }
 
@@ -874,58 +875,63 @@
             if(img2) imagesArr.push(img2);
             if(img3) imagesArr.push(img3);
 
-            db.ref('products').push({
-                code, name, brand, category, size, isSale, price, oldPrice, images: imagesArr
-            }, (error) => {
-                if(error) {
-                    alert("حدث خطأ أثناء الحفظ بالسحابة!");
-                } else {
-                    alert("تم حفظ النظارة في السحابة بنجاح وبسرعة فائقة!");
-                    document.getElementById('addGlassesForm').reset();
-                    ['prevG1', 'prevG2', 'prevG3'].forEach(id => {
-                        let el = document.getElementById(id);
-                        el.style.display = 'none';
-                        el.src = '';
-                    });
-                }
-            });
+            let productData = { code, name, brand, category, size, isSale, price, oldPrice, images: imagesArr };
+
+            if(editId) {
+                db.ref('products/' + editId).set(productData, (error) => {
+                    if(!error) {
+                        alert("تم تعديل المنتج وتحديثه في السحابة بنجاح!");
+                        resetProductForm();
+                    }
+                });
+            } else {
+                db.ref('products').push(productData, (error) => {
+                    if(!error) {
+                        alert("تم حفظ النظارة في السحابة بنجاح!");
+                        resetProductForm();
+                    }
+                });
+            }
         }
 
-        // إضافة عدسة لاصقة جديدة
-        function handleAddLens(e) {
-            e.preventDefault();
-            const brand = document.getElementById('lBrand').value.trim();
-            const name = document.getElementById('lName').value.trim();
-            const code = document.getElementById('lCode').value.trim();
-            const size = document.getElementById('lSize').value.trim();
-            const price = document.getElementById('lPrice').value.trim();
-            const img = document.getElementById('lImg').dataset.compressed;
+        function editProduct(id) {
+            let p = products.find(item => item.id === id);
+            if(!p) return;
 
-            if(!img) {
-                alert("يرجى اختيار صورة العدسة!");
-                return;
+            document.getElementById('editProductId').value = p.id;
+            document.getElementById('gCode').value = p.code || '';
+            document.getElementById('gName').value = p.name || '';
+            document.getElementById('gBrand').value = p.brand || '';
+            document.getElementById('gCategory').value = p.category || 'sunglasses';
+            document.getElementById('gSize').value = p.size || '';
+            document.getElementById('gIsSale').value = p.isSale || 'no';
+            document.getElementById('gPrice').value = p.price || '';
+            document.getElementById('gOldPrice').value = p.oldPrice || '';
+
+            document.getElementById('formBoxTitle').innerText = "تعديل بيانات المنتج / الصور";
+            document.getElementById('saveProductBtn').innerText = "تحديث تعديلات المنتج";
+            document.getElementById('cancelEditBtn').style.display = 'block';
+
+            // عرض معاينة الصور الموجودة مسبقاً
+            if(p.images) {
+                if(p.images[0]) { document.getElementById('prevG1').src = p.images[0]; document.getElementById('prevG1').style.display = 'block'; }
+                if(p.images[1]) { document.getElementById('prevG2').src = p.images[1]; document.getElementById('prevG2').style.display = 'block'; }
+                if(p.images[2]) { document.getElementById('prevG3').src = p.images[2]; document.getElementById('prevG3').style.display = 'block'; }
             }
+        }
 
-            db.ref('products').push({
-                code: code || "LENS",
-                name: name,
-                brand: brand,
-                category: "lenses",
-                size: size,
-                isSale: "no",
-                price: price,
-                oldPrice: "",
-                images: [img]
-            }, (error) => {
-                if(error) {
-                    alert("حدث خطأ أثناء الحفظ!");
-                } else {
-                    alert("تم إضافة العدسة بنجاح!");
-                    document.getElementById('addLensForm').reset();
-                    let prev = document.getElementById('prevL');
-                    prev.style.display = 'none';
-                    prev.src = '';
-                }
+        function resetProductForm() {
+            document.getElementById('addGlassesForm').reset();
+            document.getElementById('editProductId').value = '';
+            document.getElementById('formBoxTitle').innerText = "إضافة نظارة جديدة";
+            document.getElementById('saveProductBtn').innerText = "حفظ النظارة بالسحابة";
+            document.getElementById('cancelEditBtn').style.display = 'none';
+            ['prevG1', 'prevG2', 'prevG3'].forEach(id => {
+                let el = document.getElementById(id);
+                el.style.display = 'none';
+                el.src = '';
+                let fileInputId = id === 'prevG1' ? 'gImg1' : (id === 'prevG2' ? 'gImg2' : 'gImg3');
+                delete document.getElementById(fileInputId).dataset.compressed;
             });
         }
 
@@ -942,7 +948,10 @@
                         <td>${p.code || '-'} / ${p.brand}</td>
                         <td>${p.name}</td>
                         <td>${p.price} ج.م</td>
-                        <td><button class="delete-btn" onclick="deleteProduct('${p.id}')">حذف</button></td>
+                        <td>
+                            <button class="edit-btn" onclick="editProduct('${p.id}')">تعديل</button>
+                            <button class="delete-btn" onclick="deleteProduct('${p.id}')">حذف</button>
+                        </td>
                     </tr>
                 `;
             });
@@ -987,36 +996,117 @@
             });
         }
 
-        // Lightbox Functions
-        function openLightbox(imgSrc) {
-            const modal = document.getElementById('lightboxModal');
+        // Lightbox متطور مع دعم التكبير باللمس والسحب والتقليب يمين ويسار
+        function openLightbox(imagesArray, index) {
+            currentLightboxImages = imagesArray;
+            currentLightboxIndex = index;
+            lightboxZoom = 1;
+            panX = 0; panY = 0;
+            
+            updateLightboxImage();
+            document.getElementById('lightboxModal').style.display = 'flex';
+        }
+
+        function updateLightboxImage() {
             const img = document.getElementById('lightboxImage');
-            img.src = imgSrc;
-            currentZoom = 1;
-            img.style.transform = `scale(${currentZoom})`;
-            modal.style.display = 'flex';
+            img.src = currentLightboxImages[currentLightboxIndex];
+            lightboxZoom = 1;
+            panX = 0; panY = 0;
+            img.style.transform = `translate(0px, 0px) scale(1)`;
+
+            // تحديث النقاط داخل الـ Lightbox
+            const dotsContainer = document.getElementById('lightboxDots');
+            dotsContainer.innerHTML = '';
+            if(currentLightboxImages.length > 1) {
+                currentLightboxImages.forEach((_, idx) => {
+                    dotsContainer.innerHTML += `<span class="lightbox-dot ${idx === currentLightboxIndex ? 'active' : ''}" onclick="goToLightboxImage(${idx})"></span>`;
+                });
+            }
+        }
+
+        function nextLightboxImage() {
+            if(currentLightboxIndex < currentLightboxImages.length - 1) {
+                currentLightboxIndex++;
+                updateLightboxImage();
+            } else {
+                currentLightboxIndex = 0; // الدورة للبداية
+                updateLightboxImage();
+            }
+        }
+
+        function prevLightboxImage() {
+            if(currentLightboxIndex > 0) {
+                currentLightboxIndex--;
+                updateLightboxImage();
+            } else {
+                currentLightboxIndex = currentLightboxImages.length - 1;
+                updateLightboxImage();
+            }
+        }
+
+        function goToLightboxImage(idx) {
+            currentLightboxIndex = idx;
+            updateLightboxImage();
         }
 
         function closeLightbox() {
             document.getElementById('lightboxModal').style.display = 'none';
         }
 
-        function zoomIn() {
-            currentZoom += 0.3;
-            imgElement.style.transform = `scale(${currentZoom})`;
-        }
+        // تفاعل السحب باللمس لتغيير الصور أو تحريك الصورة المكبرة
+        const lightboxImg = document.getElementById('lightboxImage');
+        let touchStartX = 0;
+        let touchStartY = 0;
 
-        function zoomOut() {
-            if (currentZoom > 0.6) {
-                currentZoom -= 0.3;
-                imgElement.style.transform = `scale(${currentZoom})`;
+        lightboxImg.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                startX = touchStartX - panX;
+                startY = touchStartY - panY;
+                isDragging = true;
             }
-        }
+        });
 
-        function resetZoom() {
-            currentZoom = 1;
-            imgElement.style.transform = `scale(${currentZoom})`;
-        }
+        lightboxImg.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            if (e.touches.length === 1) {
+                let currentX = e.touches[0].clientX;
+                let currentY = e.touches[0].clientY;
+                if(lightboxZoom > 1) {
+                    panX = currentX - startX;
+                    panY = currentY - startY;
+                    lightboxImg.style.transform = `translate(${panX}px, ${panY}px) scale(${lightboxZoom})`;
+                }
+            }
+        });
+
+        lightboxImg.addEventListener('touchend', (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            let touchEndX = e.changedTouches[0].clientX;
+            let diffX = touchEndX - touchStartX;
+
+            // إذا كانت الصورة غير مكبرة (Zoom = 1)، السحب يمين/يسار يقلب الصور كاستوديو الموبايل
+            if(lightboxZoom === 1) {
+                if (diffX > 50) {
+                    prevLightboxImage(); // سحب لليمين -> الصورة السابقة
+                } else if (diffX < -50) {
+                    nextLightboxImage(); // سحب لليسار -> الصورة التالية
+                }
+            }
+        });
+
+        // دعم تكبير التصغير بالماوس والنقر المزدوج أو الأزرار
+        lightboxImg.addEventListener('click', () => {
+            if(lightboxZoom === 1) {
+                lightboxZoom = 2.5;
+            } else {
+                lightboxZoom = 1;
+                panX = 0; panY = 0;
+            }
+            lightboxImg.style.transform = `translate(${panX}px, ${panY}px) scale(${lightboxZoom})`;
+        });
     </script>
 </body>
 </html>

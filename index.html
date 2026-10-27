@@ -23,7 +23,7 @@
             --green: #25d366;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background-color: var(--bg-light); color: var(--text-dark); line-height: 1.6; }
+        body { background-color: var(--bg-light); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
 
         header {
             background-color: var(--primary);
@@ -104,13 +104,31 @@
             padding: 3px 8px; border-radius: 6px; font-weight: 900; font-size: 11px; z-index: 10;
         }
 
-        .product-images { position: relative; height: 190px; background: #f1f5f9; cursor: zoom-in; }
-        .product-images img {
-            width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.4s;
+        /* تحسين المقاسات ومعرض الصور بالسحب للصور */
+        .product-images { 
+            position: relative; 
+            height: 220px; 
+            background: #f1f5f9; 
+            display: flex; 
+            overflow-x: auto; 
+            scroll-snap-type: x mandatory; 
+            -webkit-overflow-scrolling: touch; 
+            touch-action: pan-x;
         }
-        .product-images img.active { opacity: 1; }
-        .img-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; z-index: 5; }
-        .dot { width: 7px; height: 7px; background: rgba(255,255,255,0.6); border-radius: 50%; cursor: pointer; }
+        .product-images::-webkit-scrollbar { display: none; }
+        .product-images img {
+            min-width: 100%;
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; 
+            scroll-snap-align: center;
+            flex-shrink: 0;
+            cursor: zoom-in;
+            display: block;
+            margin: 0 auto;
+        }
+        .img-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; z-index: 5; pointer-events: none; }
+        .dot { width: 7px; height: 7px; background: rgba(0,0,0,0.3); border-radius: 50%; }
         .dot.active { background: var(--accent); }
 
         .product-info { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
@@ -163,7 +181,7 @@
         .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
         .checkout-box { background: #f8fafc; padding: 15px; border-radius: 8px; margin-top: 15px; }
 
-        /* Lightbox عالي التكبير */
+        /* Lightbox تكبير */
         .lightbox-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.95); z-index: 3000; justify-content: center; align-items: center;
@@ -295,6 +313,19 @@
                 </div>
             </div>
 
+            <!-- لوحة تحليلات الزوار -->
+            <div style="background:#f8fafc; border: 1px solid #cbd5e1; padding:15px; border-radius:8px; margin-bottom:20px;">
+                <h4 style="color:var(--primary); margin-bottom:10px;">📊 إحصائيات وتحليلات الزوار</h4>
+                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+                    <button class="filter-btn active" onclick="showVisitorReport('all', this)">إجمالي الزيارات</button>
+                    <button class="filter-btn" onclick="showVisitorReport('today', this)">زيارات اليوم</button>
+                    <button class="filter-btn" onclick="showVisitorReport('month', this)">هذا الشهر</button>
+                </div>
+                <div id="visitorStatsBox" style="font-weight:700; font-size:15px; color:var(--accent); background:var(--primary); padding:10px; border-radius:6px; text-align:center;">
+                    إجمالي الزيارات المسجلة: 0 زائر
+                </div>
+            </div>
+
             <!-- نموذج إضافة النظارات -->
             <div style="background:#f1f5f9; padding:15px; border-radius:8px; margin-bottom:20px;">
                 <h4>إضافة نظارة جديدة</h4>
@@ -320,9 +351,9 @@
                         <div class="form-group"><label>السعر (ج.م)</label><input type="number" id="gPrice" required placeholder="1200"></div>
                         <div class="form-group"><label>السعر القديم</label><input type="number" id="gOldPrice" placeholder="1500"></div>
                     </div>
-                    <div class="form-group file-input-group"><label>📸 صورة أساسية:</label><input type="file" id="gImg1" accept="image/*" required onchange="previewImage(this, 'prevG1')"><img id="prevG1" class="img-preview"></div>
-                    <div class="form-group file-input-group"><label>📸 صورة 2 (اختياري):</label><input type="file" id="gImg2" accept="image/*" onchange="previewImage(this, 'prevG2')"><img id="prevG2" class="img-preview"></div>
-                    <div class="form-group file-input-group"><label>📸 صورة 3 (اختياري):</label><input type="file" id="gImg3" accept="image/*" onchange="previewImage(this, 'prevG3')"><img id="prevG3" class="img-preview"></div>
+                    <div class="form-group file-input-group"><label>📸 صورة أساسية (تضغط أوتوماتيك للسرعة):</label><input type="file" id="gImg1" accept="image/*" required onchange="previewImageCompressed(this, 'prevG1')"><img id="prevG1" class="img-preview"></div>
+                    <div class="form-group file-input-group"><label>📸 صورة 2 (اختياري):</label><input type="file" id="gImg2" accept="image/*" onchange="previewImageCompressed(this, 'prevG2')"><img id="prevG2" class="img-preview"></div>
+                    <div class="form-group file-input-group"><label>📸 صورة 3 (اختياري):</label><input type="file" id="gImg3" accept="image/*" onchange="previewImageCompressed(this, 'prevG3')"><img id="prevG3" class="img-preview"></div>
                     <button type="submit" class="save-btn" style="margin-top:10px;">حفظ النظارة بالسحابة</button>
                 </form>
             </div>
@@ -342,7 +373,7 @@
                     </div>
                     <div class="form-group file-input-group" style="background:#fff;">
                         <label>📸 صورة اللون:</label>
-                        <input type="file" id="lImg" accept="image/*" required onchange="previewImage(this, 'prevL')">
+                        <input type="file" id="lImg" accept="image/*" required onchange="previewImageCompressed(this, 'prevL')">
                         <img id="prevL" class="img-preview">
                     </div>
                     <button type="submit" class="save-btn" style="background:var(--accent); color:var(--primary); margin-top:10px;">إضافة لون العدسة بالسحابة</button>
@@ -410,6 +441,92 @@
         let currentZoom = 1;
         let imgElement = document.getElementById('lightboxImage');
 
+        // نظام تتبع الزيارات وتحليلات الوقت
+        function trackVisitorAnalytics() {
+            let visits = JSON.parse(localStorage.getItem('view_optical_visits') || '[]');
+            let now = new Date();
+            let visitRecord = {
+                date: now.toISOString().split('T')[0], // YYYY-MM-DD
+                month: now.toISOString().substring(0, 7), // YYYY-MM
+                year: now.getFullYear(),
+                dayOfWeek: now.toLocaleString('en-US', { weekday: 'long' }),
+                hour: now.getHours()
+            };
+            visits.push(visitRecord);
+            localStorage.setItem('view_optical_visits', JSON.stringify(visits));
+        }
+        trackVisitorAnalytics();
+
+        function showVisitorReport(type, btn) {
+            document.querySelectorAll('#adminModal .filter-btn').forEach(b => b.classList.remove('active'));
+            if(btn) btn.classList.add('active');
+
+            let visits = JSON.parse(localStorage.getItem('view_optical_visits') || '[]');
+            let totalCount = visits.length;
+            let label = "إجمالي الزيارات المسجلة";
+
+            let now = new Date();
+            let todayStr = now.toISOString().split('T')[0];
+            let currentMonthStr = now.toISOString().substring(0, 7);
+
+            if(type === 'today') {
+                let todayVisits = visits.filter(v => v.date === todayStr);
+                totalCount = todayVisits.length;
+                label = "زيارات اليوم";
+            } else if(type === 'month') {
+                let monthVisits = visits.filter(v => v.month === currentMonthStr);
+                totalCount = monthVisits.length;
+                label = "زيارات هذا الشهر";
+            }
+
+            document.getElementById('visitorStatsBox').innerText = `${label}: ${totalCount} زائر`;
+        }
+
+        // دالة لضغط الصور تلقائياً قبل رفعها لضمان سرعة صاروخية للموقع
+        function compressImageFile(file, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    const MAX_WIDTH = 800;
+                    const MAX_HEIGHT = 800;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    callback(canvas.toDataURL('image/jpeg', 0.8));
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function previewImageCompressed(input, previewId) {
+            const preview = document.getElementById(previewId);
+            if (input.files && input.files[0]) {
+                compressImageFile(input.files[0], function(compressedDataUrl) {
+                    preview.src = compressedDataUrl;
+                    preview.style.display = 'block';
+                    input.dataset.compressed = compressedDataUrl;
+                });
+            }
+        }
+
         // جلب البيانات من السحابة لحظياً (Realtime Sync)
         db.ref('settings').on('value', (snapshot) => {
             if (snapshot.exists()) {
@@ -429,7 +546,6 @@
                     products.push({ id: childSnapshot.key, ...childSnapshot.val() });
                 });
             } else {
-                // منتج تجريبي أول مرة لو القاعدة فارغة
                 products = [
                     {
                         id: "default_1",
@@ -482,6 +598,7 @@
             if (pwd === settings.adminPin) {
                 document.getElementById('adminModal').style.display = 'flex';
                 document.getElementById('settingWa').value = settings.whatsapp;
+                showVisitorReport('all', document.querySelector('#adminModal .filter-btn'));
                 renderAdminTable();
                 renderOrdersTable();
             } else if (pwd !== null) {
@@ -512,28 +629,6 @@
         function updateFloatingWhatsApp() {
             const waLink = `https://wa.me/${settings.whatsapp}?text=${encodeURIComponent('مرحباً فيو للبصريات، أود الاستفسار عن المنتجات لديكم.')}`;
             document.getElementById('floatingWaBtn').href = waLink;
-        }
-
-        function previewImage(input, previewId) {
-            const preview = document.getElementById(previewId);
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function readFileAsDataURL(file) {
-            return new Promise((resolve, reject) => {
-                if (!file) resolve(null);
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-                reader.readAsDataURL(file);
-            });
         }
 
         function renderProducts() {
@@ -568,9 +663,9 @@
                 let dotsHtml = '';
                 if(product.images && Array.isArray(product.images)) {
                     product.images.forEach((img, idx) => {
-                        imgsHtml += `<img src="${img}" class="${idx === 0 ? 'active' : ''}" onclick="openLightbox('${img}')">`;
+                        imgsHtml += `<img src="${img}" onclick="openLightbox('${img}')">`;
                         if (product.images.length > 1) {
-                            dotsHtml += `<span class="dot ${idx === 0 ? 'active' : ''}" onclick="event.stopPropagation(); changeSlide('${product.id}', ${idx})"></span>`;
+                            dotsHtml += `<span class="dot ${idx === 0 ? 'active' : ''}"></span>`;
                         }
                     });
                 }
@@ -590,7 +685,7 @@
 
                 card.innerHTML = `
                     ${product.isSale === 'yes' ? '<div class="sale-badge">SALE</div>' : ''}
-                    <div class="product-images" id="slider-${product.id}">
+                    <div class="product-images" id="slider-${product.id}" onscroll="updateActiveDot('${product.id}')">
                         ${imgsHtml}
                         <div class="img-dots">${dotsHtml}</div>
                     </div>
@@ -600,17 +695,17 @@
                             ${product.code ? `<span class="product-code">كود: ${product.code}</span>` : ''}
                         </div>
                         <h3 class="product-title">${product.name}</h3>
-                        ${product.size ? `<div class="product-size"><i class="fa-solid fa-circle-info"></i> ${product.size}</div>` : ''}
+                        ${product.size ? `<div class="product-size">المقاس: ${product.size}</div>` : ''}
                         <div class="price-box">
                             <span class="product-price">${product.price} ج.م</span>
                             ${product.oldPrice ? `<span class="old-price">${product.oldPrice} ج.م</span>` : ''}
                         </div>
                         <div class="card-actions">
-                            <button class="add-to-cart-btn" onclick="addToCart('${product.id}')">
-                                <i class="fa-solid fa-cart-plus"></i> للسلة
+                            <button class="add-to-cart-btn" onclick='addToCart(${JSON.stringify(product)})'>
+                                <i class="fa-solid fa-cart-plus"></i> أضف للسلة
                             </button>
-                            <a href="https://wa.me/${settings.whatsapp}?text=${directWaMsg}" target="_blank" class="direct-wa-btn" title="طلب أو استفسار مباشر عبر واتساب">
-                                <i class="fa-brands fa-whatsapp" style="font-size:18px;"></i> اطلب
+                            <a href="https://wa.me/${settings.whatsapp}?text=${directWaMsg}" target="_blank" class="direct-wa-btn" title="طلب مباشر عبر واتساب">
+                                <i class="fa-brands fa-whatsapp"></i>
                             </a>
                         </div>
                     </div>
@@ -619,203 +714,232 @@
             });
         }
 
-        function openLightbox(imgSrc) {
-            currentZoom = 1;
-            imgElement.src = imgSrc;
-            imgElement.style.transform = `scale(${currentZoom})`;
-            document.getElementById('lightboxModal').style.display = 'flex';
+        // تحديث نقاط التقليب أوتوماتيكياً عند السحب بلمس الأصبع
+        function updateActiveDot(productId) {
+            const container = document.getElementById(`slider-${productId}`);
+            if(!container) return;
+            const scrollLeft = container.scrollLeft;
+            const width = container.clientWidth;
+            const index = Math.round(scrollLeft / width);
+            const dots = container.querySelectorAll('.dot');
+            dots.forEach((dot, idx) => {
+                if(idx === index) dot.classList.add('active');
+                else dot.classList.remove('active');
+            });
         }
-
-        function closeLightbox() { document.getElementById('lightboxModal').style.display = 'none'; }
-        function zoomIn() { currentZoom += 0.3; imgElement.style.transform = `scale(${currentZoom})`; }
-        function zoomOut() { if (currentZoom > 0.5) { currentZoom -= 0.3; imgElement.style.transform = `scale(${currentZoom})`; } }
-        function resetZoom() { currentZoom = 1; imgElement.style.transform = `scale(${currentZoom})`; }
 
         function updateBrandDropdown() {
             const select = document.getElementById('brandFilter');
             const currentVal = select.value;
-            let currentProducts = products;
-            if (currentCategory === 'sale') currentProducts = products.filter(p => p.isSale === 'yes');
-            else if (currentCategory !== 'all') currentProducts = products.filter(p => p.category === currentCategory);
+            let brands = [];
+            products.forEach(p => {
+                if(p.brand && !brands.includes(p.brand)) brands.push(p.brand);
+            });
 
-            const brands = [...new Set(currentProducts.map(p => p.brand))];
-            select.innerHTML = `<option value="all">جميع الماركات / شركات العدسات</option>`;
-            brands.forEach(b => select.innerHTML += `<option value="${b}">${b}</option>`);
+            select.innerHTML = '<option value="all">جميع الماركات / شركات العدسات</option>';
+            brands.forEach(b => {
+                select.innerHTML += `<option value="${b}">${b}</option>`;
+            });
             select.value = currentVal;
         }
 
-        function changeSlide(productId, imgIndex) {
-            const slider = document.getElementById(`slider-${productId}`);
-            const imgs = slider.querySelectorAll('img');
-            const dots = slider.querySelectorAll('.dot');
-            imgs.forEach(img => img.classList.remove('active'));
-            dots.forEach(dot => dot.classList.remove('active'));
-            if(imgs[imgIndex]) imgs[imgIndex].classList.add('active');
-            if(dots[imgIndex]) dots[imgIndex].classList.add('active');
-        }
-
         function filterCategory(cat, btn) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
             currentCategory = cat;
-            document.getElementById('brandFilter').value = 'all';
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            if(btn) btn.classList.add('active');
             renderProducts();
         }
 
-        function applyFilters() { renderProducts(); }
-
-        function addToCart(pId) {
-            const item = products.find(p => p.id === pId);
-            if (item) {
-                cart.push(item);
-                document.getElementById('cartCount').innerText = cart.length;
-                alert(`تم إضافة (${item.name}) للسلة!`);
-            }
+        function applyFilters() {
+            renderProducts();
         }
 
-        function openCartModal() { document.getElementById('cartModal').style.display = 'flex'; renderCartList(); }
-        function closeCartModal() { document.getElementById('cartModal').style.display = 'none'; }
+        // إدارة السلة
+        function addToCart(product) {
+            cart.push(product);
+            updateCartUI();
+            alert(`تمت إضافة (${product.name}) إلى السلة بنجاح!`);
+        }
 
-        function renderCartList() {
+        function updateCartUI() {
+            document.getElementById('cartCount').innerText = cart.length;
+        }
+
+        function openCartModal() {
+            const modal = document.getElementById('cartModal');
             const list = document.getElementById('cartItemsList');
             const checkoutSec = document.getElementById('checkoutSection');
             list.innerHTML = '';
 
             if (cart.length === 0) {
-                list.innerHTML = '<p style="text-align:center; padding:20px; color:var(--gray);">السلة فارغة حالياً.</p>';
+                list.innerHTML = `<p style="text-align:center; color:var(--gray); padding:20px;">سلة التسوق فارغة حالياً.</p>`;
                 checkoutSec.style.display = 'none';
-                return;
-            }
-
-            checkoutSec.style.display = 'block';
-            let total = 0;
-            cart.forEach((item, index) => {
-                total += parseFloat(item.price);
-                list.innerHTML += `
-                    <div class="cart-item">
-                        <div>
-                            <strong>${item.name}</strong>
-                            <div style="font-size:12px; color:var(--gray);">${item.price} ج.م (${item.brand})</div>
+            } else {
+                let total = 0;
+                cart.forEach((item, index) => {
+                    total += parseFloat(item.price || 0);
+                    list.innerHTML += `
+                        <div class="cart-item">
+                            <div>
+                                <h4 style="font-size:14px; color:var(--primary);">${item.name}</h4>
+                                <span style="font-size:12px; color:var(--accent); font-weight:900;">${item.price} ج.م</span>
+                            </div>
+                            <button class="delete-btn" onclick="removeFromCart(${index})">حذف</button>
                         </div>
-                        <button class="delete-btn" onclick="removeFromCart(${index})">حذف</button>
-                    </div>
-                `;
-            });
-            document.getElementById('cartTotal').innerText = total;
+                    `;
+                });
+                document.getElementById('cartTotal').innerText = total;
+                checkoutSec.style.display = 'block';
+            }
+            modal.style.display = 'flex';
         }
 
         function removeFromCart(index) {
             cart.splice(index, 1);
-            document.getElementById('cartCount').innerText = cart.length;
-            renderCartList();
+            updateCartUI();
+            openCartModal();
+        }
+
+        function closeCartModal() {
+            document.getElementById('cartModal').style.display = 'none';
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').style.display = 'none';
         }
 
         function submitOrder() {
             const name = document.getElementById('custName').value.trim();
             const phone = document.getElementById('custPhone').value.trim();
 
-            if (!name || !phone) { alert("يرجى إدخال الاسم ورقم التليفون أولاً!"); return; }
-
-            let itemsSummary = cart.map(i => 
-                `• الموديل: ${i.name}\n  البراند: ${i.brand}\n  ${i.code ? 'الكود: ' + i.code + '\n' : ''}  السعر: ${i.price} ج.م\n  الصورة: ${i.images && i.images[0] ? i.images[0] : ''}`
-            ).join('\n\n');
-
-            let total = document.getElementById('cartTotal').innerText;
-            let orderText = `مرحباً فيو للبصريات 👓\nأود طلب المنتجات التالية من السلة:\n\n${itemsSummary}\n\n------------------\nالإجمالي الكلي: ${total} ج.م\n\nبيانات العميل:\nالاسم: ${name}\nالهاتف: ${phone}`;
-
-            // حفظ الطلب في السحابة مباشرة
-            db.ref('orders').push({ name, phone, itemsSummary, total, date: new Date().toLocaleString() });
-
-            window.open(`https://wa.me/${settings.whatsapp}?text=${encodeURIComponent(orderText)}`, '_blank');
-            cart = [];
-            document.getElementById('cartCount').innerText = '0';
-            closeCartModal();
-        }
-
-        function closeAdminModal() { document.getElementById('adminModal').style.display = 'none'; }
-
-        function saveSettings() {
-            const newWa = document.getElementById('settingWa').value;
-            if (newWa) {
-                settings.whatsapp = newWa;
-                db.ref('settings').set(settings);
-                updateFloatingWhatsApp();
-                alert("تم حفظ وتحديث رقم الواتساب في السحابة بنجاح!");
+            if(!name || !phone) {
+                alert("يرجى إدخال الاسم ورقم التليفون لإتمام الطلب!");
+                return;
             }
+
+            let orderText = `🛒 طلب جديد من متجر View Optical:\n\n`;
+            orderText += `👤 الاسم: ${name}\n`;
+            orderText += `📞 التليفون: ${phone}\n\n`;
+            orderText += `📦 المنتجات المطلوبة:\n`;
+
+            let total = 0;
+            let itemsSummary = [];
+            cart.forEach((item, i) => {
+                total += parseFloat(item.price || 0);
+                orderText += `${i+1}. ${item.name} (${item.brand}) - ${item.price} ج.م\n`;
+                itemsSummary.push(`${item.name} (${item.price}ج.م)`);
+            });
+
+            orderText += `\n💰 الإجمالي الكلي: ${total} ج.م`;
+
+            // حفظ الطلب في قاعدة البيانات السحابية
+            db.ref('orders').push({
+                name: name,
+                phone: phone,
+                items: itemsSummary.join(', '),
+                total: total + " ج.م"
+            });
+
+            const waUrl = `https://wa.me/${settings.whatsapp}?text=${encodeURIComponent(orderText)}`;
+            window.open(waUrl, '_blank');
+
+            cart = [];
+            updateCartUI();
+            closeCartModal();
+            alert("تم إرسال الطلب وحفظه بنجاح!");
         }
 
-        async function handleAddGlasses(e) {
+        // إضافة نظارة جديدة
+        function handleAddGlasses(e) {
             e.preventDefault();
-            const file1 = document.getElementById('gImg1').files[0];
-            const file2 = document.getElementById('gImg2').files[0];
-            const file3 = document.getElementById('gImg3').files[0];
-            if (!file1) { alert("اختر الصورة الأساسية!"); return; }
+            const code = document.getElementById('gCode').value.trim();
+            const name = document.getElementById('gName').value.trim();
+            const brand = document.getElementById('gBrand').value.trim();
+            const category = document.getElementById('gCategory').value;
+            const size = document.getElementById('gSize').value.trim();
+            const isSale = document.getElementById('gIsSale').value;
+            const price = document.getElementById('gPrice').value.trim();
+            const oldPrice = document.getElementById('gOldPrice').value.trim();
 
-            const img1 = await readFileAsDataURL(file1);
-            const img2 = file2 ? await readFileAsDataURL(file2) : null;
-            const img3 = file3 ? await readFileAsDataURL(file3) : null;
+            const img1 = document.getElementById('gImg1').dataset.compressed;
+            const img2 = document.getElementById('gImg2').dataset.compressed;
+            const img3 = document.getElementById('gImg3').dataset.compressed;
 
-            const newProduct = {
-                code: document.getElementById('gCode').value.trim(),
-                name: document.getElementById('gName').value.trim(),
-                brand: document.getElementById('gBrand').value.trim(),
-                size: document.getElementById('gSize').value.trim(),
-                category: document.getElementById('gCategory').value,
-                isSale: document.getElementById('gIsSale').value,
-                price: document.getElementById('gPrice').value,
-                oldPrice: document.getElementById('gOldPrice').value,
-                images: [img1, img2, img3].filter(Boolean)
-            };
+            if(!img1) {
+                alert("يرجى اختيار الصورة الأساسية للنظارة!");
+                return;
+            }
 
-            // رفع المنتج الجديد للسحابة مباشرة
-            db.ref('products').push(newProduct);
+            let imagesArr = [img1];
+            if(img2) imagesArr.push(img2);
+            if(img3) imagesArr.push(img3);
 
-            renderAdminTable();
-            document.getElementById('addGlassesForm').reset();
-            document.querySelectorAll('#addGlassesForm .img-preview').forEach(i => i.style.display = 'none');
-            alert("تم إضافة النظارة إلى السحابة بنجاح وستظهر لدى جميع العملاء فوراً!");
+            db.ref('products').push({
+                code, name, brand, category, size, isSale, price, oldPrice, images: imagesArr
+            }, (error) => {
+                if(error) {
+                    alert("حدث خطأ أثناء الحفظ بالسحابة!");
+                } else {
+                    alert("تم حفظ النظارة في السحابة بنجاح وبسرعة فائقة!");
+                    document.getElementById('addGlassesForm').reset();
+                    ['prevG1', 'prevG2', 'prevG3'].forEach(id => {
+                        let el = document.getElementById(id);
+                        el.style.display = 'none';
+                        el.src = '';
+                    });
+                }
+            });
         }
 
-        async function handleAddLens(e) {
+        // إضافة عدسة لاصقة جديدة
+        function handleAddLens(e) {
             e.preventDefault();
-            const file = document.getElementById('lImg').files[0];
-            if (!file) { alert("اختر صورة العدسة!"); return; }
+            const brand = document.getElementById('lBrand').value.trim();
+            const name = document.getElementById('lName').value.trim();
+            const code = document.getElementById('lCode').value.trim();
+            const size = document.getElementById('lSize').value.trim();
+            const price = document.getElementById('lPrice').value.trim();
+            const img = document.getElementById('lImg').dataset.compressed;
 
-            const imgBase64 = await readFileAsDataURL(file);
-            const customCode = document.getElementById('lCode').value.trim();
+            if(!img) {
+                alert("يرجى اختيار صورة العدسة!");
+                return;
+            }
 
-            const newLens = {
-                code: customCode !== "" ? customCode : null,
-                name: document.getElementById('lName').value.trim(),
-                brand: document.getElementById('lBrand').value.trim(),
-                size: document.getElementById('lSize').value.trim(),
+            db.ref('products').push({
+                code: code || "LENS",
+                name: name,
+                brand: brand,
                 category: "lenses",
+                size: size,
                 isSale: "no",
-                price: document.getElementById('lPrice').value,
+                price: price,
                 oldPrice: "",
-                images: [imgBase64]
-            };
-
-            // رفع العدسة للسحابة مباشرة
-            db.ref('products').push(newLens);
-
-            renderAdminTable();
-            document.getElementById('addLensForm').reset();
-            document.getElementById('prevL').style.display = 'none';
-            alert("تم إضافة العدسة إلى السحابة بنجاح!");
+                images: [img]
+            }, (error) => {
+                if(error) {
+                    alert("حدث خطأ أثناء الحفظ!");
+                } else {
+                    alert("تم إضافة العدسة بنجاح!");
+                    document.getElementById('addLensForm').reset();
+                    let prev = document.getElementById('prevL');
+                    prev.style.display = 'none';
+                    prev.src = '';
+                }
+            });
         }
 
         function renderAdminTable() {
             const tbody = document.getElementById('adminProductsTable');
-            const query = (document.getElementById('adminSearchInput')?.value || '').toLowerCase();
+            const search = document.getElementById('adminSearchInput').value.toLowerCase();
             tbody.innerHTML = '';
 
-            let filtered = products.filter(p => p.name.toLowerCase().includes(query) || p.brand.toLowerCase().includes(query) || (p.code && p.code.toLowerCase().includes(query)));
+            let filtered = products.filter(p => p.name.toLowerCase().includes(search) || (p.code && p.code.toLowerCase().includes(search)) || p.brand.toLowerCase().includes(search));
 
             filtered.forEach(p => {
                 tbody.innerHTML += `
                     <tr>
-                        <td>${p.code ? p.code : p.brand}</td>
+                        <td>${p.code || '-'} / ${p.brand}</td>
                         <td>${p.name}</td>
                         <td>${p.price} ج.م</td>
                         <td><button class="delete-btn" onclick="deleteProduct('${p.id}')">حذف</button></td>
@@ -825,7 +949,7 @@
         }
 
         function deleteProduct(id) {
-            if (confirm("هل أنت متأكد من الحذف؟ سيتم حذفه من السحابة نهائياً.")) {
+            if(confirm("هل أنت متأكد من حذف هذا المنتج من السحابة؟")) {
                 db.ref('products/' + id).remove();
             }
         }
@@ -833,16 +957,65 @@
         function renderOrdersTable() {
             const tbody = document.getElementById('adminOrdersTable');
             tbody.innerHTML = '';
+
+            if(orders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--gray);">لا توجد طلبات مسجلة بعد.</td></tr>`;
+                return;
+            }
+
             orders.forEach(o => {
                 tbody.innerHTML += `
                     <tr>
                         <td>${o.name}</td>
                         <td>${o.phone}</td>
-                        <td style="white-space:pre-line;">${o.itemsSummary}</td>
-                        <td>${o.total} ج.م</td>
+                        <td>${o.items}</td>
+                        <td>${o.total}</td>
                     </tr>
                 `;
             });
+        }
+
+        function saveSettings() {
+            const wa = document.getElementById('settingWa').value.trim();
+            if(!wa) {
+                alert("يرجى كتابة رقم الواتساب!");
+                return;
+            }
+            settings.whatsapp = wa;
+            db.ref('settings').set(settings, (error) => {
+                if(!error) alert("تم حفظ رقم الواتساب بنجاح في السحابة!");
+            });
+        }
+
+        // Lightbox Functions
+        function openLightbox(imgSrc) {
+            const modal = document.getElementById('lightboxModal');
+            const img = document.getElementById('lightboxImage');
+            img.src = imgSrc;
+            currentZoom = 1;
+            img.style.transform = `scale(${currentZoom})`;
+            modal.style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightboxModal').style.display = 'none';
+        }
+
+        function zoomIn() {
+            currentZoom += 0.3;
+            imgElement.style.transform = `scale(${currentZoom})`;
+        }
+
+        function zoomOut() {
+            if (currentZoom > 0.6) {
+                currentZoom -= 0.3;
+                imgElement.style.transform = `scale(${currentZoom})`;
+            }
+        }
+
+        function resetZoom() {
+            currentZoom = 1;
+            imgElement.style.transform = `scale(${currentZoom})`;
         }
     </script>
 </body>

@@ -533,19 +533,18 @@
             `;
         }
 
-        // دالة واتساب رسمية ومضمونة 100% (تتحول للصيغة الدولية أوتوماتيكياً وتفتح التطبيق فوراً)
+        // تم التعديل إلى رابط wa.me المباشر والمضمون 100% لتجنب انقطاع الاتصال
         function sendToWhatsApp(messageText) {
             let rawNumber = settings.whatsapp || "201000000000";
             let cleanNumber = rawNumber.replace(/\D/g, '');
             
-            // ضبط الرقم دولياً بدقة لتجنب أي أخطاء في الروابط
             if (cleanNumber.startsWith('0')) {
                 cleanNumber = '20' + cleanNumber.substring(1);
             } else if (!cleanNumber.startsWith('20') && cleanNumber.length === 10) {
                 cleanNumber = '20' + cleanNumber;
             }
             
-            let waUrl = `https://api.whatsapp.com/send?phone=${cleanNumber}&text=${encodeURIComponent(messageText)}`;
+            let waUrl = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(messageText)}`;
             window.open(waUrl, '_blank');
         }
 

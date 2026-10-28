@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- مكتبات Firebase السحابية للرابط المباشر -->
+    <!-- مكتبات Firebase السحابية -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
@@ -21,14 +21,16 @@
             --gray: #94a3b8;
             --red: #ef4444;
             --green: #25d366;
+            --facebook: #1877f2;
+            --tiktok: #000000;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background-color: var(--bg-light); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
+        body { background-color: var(--bg-light); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; display: flex; flex-direction: column; min-height: 100vh; }
 
         header {
             background-color: var(--primary);
             color: var(--white);
-            padding: 15px 5%;
+            padding: 12px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -38,30 +40,57 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         .logo { display: flex; flex-direction: column; cursor: pointer; user-select: none; }
-        .logo-ar { font-size: 22px; font-weight: 900; color: var(--accent); }
-        .logo-en { font-size: 11px; color: var(--gray); letter-spacing: 2px; }
+        .logo-ar { font-size: 20px; font-weight: 900; color: var(--accent); }
+        .logo-en { font-size: 10px; color: var(--gray); letter-spacing: 2px; }
 
-        .header-actions { display: flex; gap: 12px; align-items: center; }
+        .header-actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
         
+        .nav-btn {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 5px 8px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+        .nav-btn:hover { background: var(--accent); color: var(--primary); }
+
+        /* أزرار السوشيال ميديا بالأعلى بشكل شيك */
+        .social-icon-btn {
+            width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            color: white; font-size: 14px; text-decoration: none; transition: transform 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .social-icon-btn:hover { transform: scale(1.1); }
+        .fb-btn { background-color: var(--facebook); }
+        .tk-btn { background-color: var(--tiktok); border: 1px solid var(--accent); }
+
         .cart-btn {
             background: var(--accent);
             color: var(--primary);
             border: none;
-            padding: 8px 16px;
+            padding: 5px 10px;
             border-radius: 8px;
             font-weight: 700;
             cursor: pointer;
             position: relative;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 5px;
+            font-size: 11px;
         }
         .cart-count {
             background: var(--red);
             color: var(--white);
             border-radius: 50%;
-            padding: 2px 7px;
-            font-size: 12px;
+            padding: 1px 5px;
+            font-size: 10px;
             font-weight: 900;
         }
 
@@ -79,7 +108,7 @@
         }
         .hero h1 { font-size: 30px; color: var(--accent); margin-bottom: 5px; }
 
-        .container { max-width: 1200px; margin: 25px auto; padding: 0 10px; }
+        .container { max-width: 1200px; margin: 25px auto; padding: 0 10px; flex: 1; width: 100%; }
 
         .filters-container { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; }
         .categories-filter { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
@@ -89,12 +118,12 @@
         }
         .filter-btn.active, .filter-btn:hover { background: var(--primary); color: var(--white); border-color: var(--primary); }
 
-        .secondary-filters { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .secondary-filters { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; align-items: center; }
         .secondary-filters select, .secondary-filters input {
             padding: 8px 14px; border-radius: 8px; border: 1px solid #cbd5e1; font-weight: 700; font-size: 13px;
         }
 
-        /* عرض 3 أعمدة (شبابيك) للمنتجات بجانب بعضها */
+        /* عرض 3 أعمدة بالعرض للمنتجات */
         .products-grid { 
             display: grid; 
             grid-template-columns: repeat(3, 1fr); 
@@ -117,52 +146,24 @@
             padding: 2px 5px; border-radius: 4px; font-weight: 900; font-size: 9px; z-index: 10;
         }
 
-        /* حاوية الصور مع إمكانية إظهار علامة نفذت الكمية بخط أحمر خفيف */
-        .product-images-wrapper {
-            position: relative;
-        }
+        .product-images-wrapper { position: relative; }
         .sold-out-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.75);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 12;
-            pointer-events: none;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.75); display: flex; justify-content: center; align-items: center; z-index: 12; pointer-events: none;
         }
         .sold-out-text {
-            color: var(--red);
-            font-weight: 900;
-            font-size: 15px;
-            border: 2px dashed var(--red);
-            padding: 4px 12px;
-            border-radius: 6px;
-            background: rgba(254, 226, 226, 0.9);
-            transform: rotate(-10deg);
+            color: var(--red); font-weight: 900; font-size: 15px; border: 2px dashed var(--red);
+            padding: 4px 12px; border-radius: 6px; background: rgba(254, 226, 226, 0.9); transform: rotate(-10deg);
         }
 
         .product-images { 
-            position: relative; 
-            height: 140px; 
-            background: #f1f5f9; 
-            display: flex; 
-            overflow-x: auto; 
-            scroll-snap-type: x mandatory; 
-            -webkit-overflow-scrolling: touch; 
-            touch-action: pan-x;
+            position: relative; height: 140px; background: #f1f5f9; display: flex; overflow-x: auto; 
+            scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; touch-action: pan-x;
         }
         .product-images::-webkit-scrollbar { display: none; }
         .product-images img {
-            min-width: 100%;
-            width: 100%; 
-            height: 100%; 
-            object-fit: contain; 
-            scroll-snap-align: center;
-            flex-shrink: 0;
-            cursor: zoom-in;
-            display: block;
-            margin: 0 auto;
+            min-width: 100%; width: 100%; height: 100%; object-fit: contain; scroll-snap-align: center;
+            flex-shrink: 0; cursor: zoom-in; display: block; margin: 0 auto;
         }
         .img-dots { position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); display: flex; gap: 3px; z-index: 5; pointer-events: none; }
         .dot { width: 5px; height: 5px; background: rgba(0,0,0,0.3); border-radius: 50%; }
@@ -192,6 +193,28 @@
             border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; text-decoration: none;
         }
 
+        /* أزرار التنقل بين الصفحات (Pagination) */
+        .pagination { display: flex; justify-content: center; gap: 6px; margin-top: 30px; align-items: center; }
+        .page-btn {
+            background: var(--white); border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 6px;
+            cursor: pointer; font-weight: 700; font-size: 13px; color: var(--primary); transition: 0.3s;
+        }
+        .page-btn.active, .page-btn:hover { background: var(--primary); color: var(--white); border-color: var(--primary); }
+
+        /* تذييل الصفحة (Footer) لعرض خدمة العملاء أسفل المتجر */
+        footer {
+            background-color: var(--primary);
+            color: var(--white);
+            text-align: center;
+            padding: 25px 20px;
+            margin-top: 50px;
+            border-top: 3px solid var(--accent);
+        }
+        .footer-content { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+        .footer-title { font-size: 16px; font-weight: 900; color: var(--accent); }
+        .footer-phone { font-size: 18px; font-weight: 700; color: var(--white); direction: ltr; display: inline-block; }
+        .footer-copy { font-size: 11px; color: var(--gray); margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
+
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center;
@@ -210,7 +233,8 @@
         .img-preview { width: 45px; height: 45px; object-fit: cover; border-radius: 4px; display: none; margin-top: 5px; }
 
         .save-btn { background: var(--primary); color: var(--accent); border: none; padding: 10px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; }
-        
+        .export-excel-btn { background: #16a34a; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 12px; }
+
         table { width: 100%; border-collapse: collapse; margin-top: 10px; background: var(--white); }
         th, td { padding: 8px; text-align: right; border-bottom: 1px solid #f1f5f9; font-size: 12px; }
         th { background: #e2e8f0; font-weight: 700; }
@@ -260,6 +284,22 @@
             <span class="logo-en">VIEW OPTICAL</span>
         </div>
         <div class="header-actions">
+            <!-- زر فيسبوك بالأعلى بشعار فيسبوك -->
+            <a id="fbHeaderBtn" href="#" target="_blank" class="social-icon-btn fb-btn" title="صفحتنا على فيسبوك">
+                <i class="fa-brands fa-facebook-f"></i>
+            </a>
+            <!-- زر تيك توك بالأعلى بشعار تيك توك -->
+            <a id="tkHeaderBtn" href="#" target="_blank" class="social-icon-btn tk-btn" title="صفحتنا على تيك توك">
+                <i class="fa-brands fa-tiktok"></i>
+            </a>
+            <!-- زر فرعنا -->
+            <a id="branchLinkBtn" href="#" onclick="openBranchMap(event)" class="nav-btn">
+                <i class="fa-solid fa-location-dot"></i> فرعنا
+            </a>
+            <!-- زر تسجيل دخول الأعضاء -->
+            <button id="memberAuthBtn" class="nav-btn" onclick="openMemberModal()">
+                <i class="fa-solid fa-user"></i> <span id="memberBtnText">تسجيل / حسابي</span>
+            </button>
             <button class="cart-btn" onclick="openCartModal()">
                 <i class="fa-solid fa-cart-shopping"></i> السلة
                 <span class="cart-count" id="cartCount">0</span>
@@ -268,8 +308,8 @@
     </header>
 
     <section class="hero">
-        <h1>تشكيلة النظارات والعدسات اللاصقة الفاخرة</h1>
-        <p>تصفح أحدث الموديلات واطلبها مباشرة عبر الواتساب</p>
+        <h1>تشكيلة النظارات والعدسات اللاصقة والإكسسوارات الفاخرة</h1>
+        <p>تصفح أحدث الموديلات والإكسسوارات واطلبها مباشرة عبر الواتساب</p>
     </section>
 
     <div class="container">
@@ -280,18 +320,36 @@
                 <button class="filter-btn" onclick="filterCategory('optical', this)">👓 طبية</button>
                 <button class="filter-btn" onclick="filterCategory('kids', this)">👶 أطفال</button>
                 <button class="filter-btn" onclick="filterCategory('lenses', this)">👁️ عدسات</button>
+                <button class="filter-btn" onclick="filterCategory('accessories', this)">🎨 إكسسوارات</button>
                 <button class="filter-btn" onclick="filterCategory('sale', this)" style="color: var(--red);">🔥 عروض</button>
             </div>
             <div class="secondary-filters">
                 <select id="brandFilter" onchange="applyFilters()">
                     <option value="all">جميع الماركات</option>
                 </select>
+                <!-- فلتر ترتيب السعر -->
+                <select id="priceSortFilter" onchange="applyFilters()">
+                    <option value="default">ترتيب حسب السعر</option>
+                    <option value="low-high">السعر: من الأقل للأعلى</option>
+                    <option value="high-low">السعر: من الأعلى للأقل</option>
+                </select>
                 <input type="text" id="searchInput" placeholder="ابحث بالكود أو الموديل..." oninput="applyFilters()" style="width: 200px;">
             </div>
         </div>
 
         <div class="products-grid" id="productsGrid"></div>
+        <!-- أزرار التنقل بين الصفحات (Pagination) -->
+        <div class="pagination" id="paginationContainer"></div>
     </div>
+
+    <!-- تذييل الصفحة (Footer) لعرض خدمة العملاء أسفل المتجر -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-title"><i class="fa-solid fa-headset"></i> خدمة العملاء والدعم</div>
+            <div id="footerSupportPhone" class="footer-phone">01000000000</div>
+            <div class="footer-copy">© 2026 فيو للبصريات (View Optical) — جميع الحقوق محفوظة</div>
+        </div>
+    </footer>
 
     <!-- Lightbox المتطور للتكبير والتصفح باللمس -->
     <div class="lightbox-modal" id="lightboxModal">
@@ -302,6 +360,33 @@
             <img id="lightboxImage" class="lightbox-img" src="" alt="عرض الصورة">
         </div>
         <div class="lightbox-dots" id="lightboxDots"></div>
+    </div>
+
+    <!-- نافذة تسجيل العضوية للعميل -->
+    <div class="modal" id="memberModal">
+        <div class="modal-content" style="max-width: 450px;">
+            <span class="close-modal" onclick="closeMemberModal()">&times;</span>
+            <div class="modal-title">تسجيل عضو جديد للحصول على عروض حصرية 🎁</div>
+            <div id="memberLoggedBox" style="display:none; text-align:center; padding:10px;">
+                <p style="font-weight:700; color:var(--primary); font-size:15px;" id="welcomeMemberMsg"></p>
+                <button class="save-btn" style="background:var(--red); color:white; margin-top:15px;" onclick="logoutMember()">تسجيل الخروج</button>
+            </div>
+            <form id="memberRegisterForm" onsubmit="handleRegisterMember(event)">
+                <div class="form-group">
+                    <label>الاسم بالكامل</label>
+                    <input type="text" id="memName" required placeholder="أدخل اسمك الكريم">
+                </div>
+                <div class="form-group">
+                    <label>البريد الإلكتروني (الإيميل)</label>
+                    <input type="email" id="memEmail" required placeholder="example@gmail.com">
+                </div>
+                <div class="form-group">
+                    <label>رقم الموبايل / التليفون</label>
+                    <input type="tel" id="memPhone" required placeholder="010xxxxxxx">
+                </div>
+                <button type="submit" class="save-btn" style="width:100%; margin-top:10px;">حفظ الانضمام للعروض</button>
+            </form>
+        </div>
     </div>
 
     <!-- نافذة السلة والطلب -->
@@ -337,13 +422,32 @@
             <span class="close-modal" onclick="closeAdminModal()">&times;</span>
             <div class="modal-title">لوحة تحكم فيو للبصريات (سحابي ☁️)</div>
             
-            <!-- إعدادات الواتساب -->
+            <!-- إعدادات المتجر وروابط التواصل والسوشيال -->
             <div style="background:#f1f5f9; padding:12px; border-radius:8px; margin-bottom:15px;">
-                <h4 style="font-size:13px;">إعدادات الواتساب</h4>
-                <div style="display:flex; gap:10px; margin-top:6px;">
-                    <input type="text" id="settingWa" placeholder="رقم الواتساب 2010xxxx" style="flex:1; padding:6px; border-radius:6px; border:1px solid #cbd5e1;">
-                    <button class="save-btn" onclick="saveSettings()">حفظ الرقم</button>
+                <h4 style="font-size:13px;">إعدادات المتجر وروابط التواصل والسوشيال</h4>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:6px;">
+                    <div class="form-group">
+                        <label style="font-size:11px;">رقم الواتساب</label>
+                        <input type="text" id="settingWa" placeholder="2010xxxx" style="width:100%; padding:6px; border-radius:6px; border:1px solid #cbd5e1;">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:11px;">رقم خدمة العملاء (بالأسفل)</label>
+                        <input type="text" id="settingSupportPhone" placeholder="010xxxxxxxx" style="width:100%; padding:6px; border-radius:6px; border:1px solid #cbd5e1;">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:11px;">رابط صفحة فيسبوك</label>
+                        <input type="text" id="settingFb" placeholder="https://facebook.com/..." style="width:100%; padding:6px; border-radius:6px; border:1px solid #cbd5e1;">
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:11px;">رابط صفحة تيك توك</label>
+                        <input type="text" id="settingTk" placeholder="https://tiktok.com/@..." style="width:100%; padding:6px; border-radius:6px; border:1px solid #cbd5e1;">
+                    </div>
                 </div>
+                <div class="form-group" style="margin-top:6px;">
+                    <label style="font-size:11px;">رابط موقع الفرع (Google Maps)</label>
+                    <input type="text" id="settingBranch" placeholder="https://maps.app.goo.gl/..." style="width:100%; padding:6px; border-radius:6px; border:1px solid #cbd5e1;">
+                </div>
+                <button class="save-btn" style="margin-top:8px;" onclick="saveSettings()">حفظ إعدادات الروابط والاتصال</button>
             </div>
 
             <!-- تغيير الرمز السري -->
@@ -356,6 +460,24 @@
                 </div>
             </div>
 
+            <!-- سجل الأعضاء المسجلين + زر تصدير Excel -->
+            <div style="background:#ecfdf5; border:1px solid #a7f3d0; padding:12px; border-radius:8px; margin-bottom:15px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h4 style="color:#047857; font-size:13px;">👥 سجل إيميلات وأرقام الأعضاء المسجلين</h4>
+                    <button class="export-excel-btn" onclick="exportMembersToExcel()"><i class="fa-solid fa-file-excel"></i> تصدير لملف Excel</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>الاسم</th>
+                            <th>البريد الإلكتروني (الإيميل)</th>
+                            <th>التليفون</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminMembersTable"></tbody>
+                </table>
+            </div>
+
             <!-- لوحة تحليلات الزوار المتقدمة (الفترة + الساعات) -->
             <div style="background:#f8fafc; border: 1px solid #cbd5e1; padding:12px; border-radius:8px; margin-bottom:15px;">
                 <h4 style="color:var(--primary); margin-bottom:8px; font-size:13px;">📊 إحصائيات وزوار متقدمة</h4>
@@ -366,7 +488,6 @@
                     <button class="filter-btn" onclick="showVisitorReport('month', this)">هذا الشهر</button>
                 </div>
 
-                <!-- خريطة وتحديد نطاق التاريخ المخصص -->
                 <div style="background:#e2e8f0; padding:10px; border-radius:6px; margin-bottom:10px; display:flex; gap:8px; flex-wrap:wrap; align-items:flex-end;">
                     <div class="form-group" style="flex:1; margin:0;"><label style="font-size:11px;">من تاريخ:</label><input type="date" id="dateFrom" style="padding:4px; font-size:11px;"></div>
                     <div class="form-group" style="flex:1; margin:0;"><label style="font-size:11px;">إلى تاريخ:</label><input type="date" id="dateTo" style="padding:4px; font-size:11px;"></div>
@@ -378,17 +499,17 @@
                 </div>
             </div>
 
-            <!-- نموذج إضافة / تعديل النظارات -->
+            <!-- نموذج إضافة / تعديل النظارات والإكسسوارات -->
             <div style="background:#f1f5f9; padding:12px; border-radius:8px; margin-bottom:15px;">
-                <h4 id="formBoxTitle" style="font-size:13px;">إضافة نظارة جديدة</h4>
+                <h4 id="formBoxTitle" style="font-size:13px;">إضافة منتج / إكسسوار جديد</h4>
                 <form id="addGlassesForm" onsubmit="handleAddGlasses(event)">
                     <input type="hidden" id="editProductId" value="">
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-                        <div class="form-group"><label>كود النظارة</label><input type="text" id="gCode" required placeholder="V-101"></div>
-                        <div class="form-group"><label>اسم الموديل</label><input type="text" id="gName" required placeholder="RayBan"></div>
+                        <div class="form-group"><label>كود المنتج</label><input type="text" id="gCode" required placeholder="ACC-101"></div>
+                        <div class="form-group"><label>اسم الموديل / المنتج</label><input type="text" id="gName" required placeholder="سلسلة نظارة أنيقة"></div>
                     </div>
                     <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
-                        <div class="form-group"><label>البراند</label><input type="text" id="gBrand" required placeholder="Boss"></div>
+                        <div class="form-group"><label>البراند / الماركة</label><input type="text" id="gBrand" required placeholder="View"></div>
                         <div class="form-group">
                             <label>القسم</label>
                             <select id="gCategory">
@@ -396,24 +517,25 @@
                                 <option value="optical">طبية</option>
                                 <option value="kids">أطفال</option>
                                 <option value="lenses">عدسات</option>
+                                <option value="accessories">إكسسوارات</option>
                             </select>
                         </div>
-                        <div class="form-group"><label>المقاس</label><input type="text" id="gSize" placeholder="54-18"></div>
+                        <div class="form-group"><label>المقاس / الوصف الخفيف</label><input type="text" id="gSize" placeholder="رابر أطفال / سلسلة"></div>
                     </div>
                     <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
                         <div class="form-group"><label>حالة التوفر</label><select id="gAvailable"><option value="yes">متوفر بالمخزون</option><option value="no">نفذت الكمية</option></select></div>
                         <div class="form-group"><label>Sale؟</label><select id="gIsSale"><option value="no">لا</option><option value="yes">نعم</option></select></div>
-                        <div class="form-group"><label>السعر (ج.م)</label><input type="number" id="gPrice" required placeholder="1200"></div>
+                        <div class="form-group"><label>السعر (ج.م)</label><input type="number" id="gPrice" required placeholder="150"></div>
                     </div>
                     <div style="display:grid; grid-template-columns: 1fr; gap:8px;">
-                        <div class="form-group"><label>السعر القديم</label><input type="number" id="gOldPrice" placeholder="1500"></div>
+                        <div class="form-group"><label>السعر القديم</label><input type="number" id="gOldPrice" placeholder="200"></div>
                     </div>
                     <div class="form-group file-input-group"><label>📸 صورة 1:</label><input type="file" id="gImg1" accept="image/*" onchange="previewImageCompressed(this, 'prevG1')"><img id="prevG1" class="img-preview"></div>
                     <div class="form-group file-input-group"><label>📸 صورة 2:</label><input type="file" id="gImg2" accept="image/*" onchange="previewImageCompressed(this, 'prevG2')"><img id="prevG2" class="img-preview"></div>
                     <div class="form-group file-input-group"><label>📸 صورة 3:</label><input type="file" id="gImg3" accept="image/*" onchange="previewImageCompressed(this, 'prevG3')"><img id="prevG3" class="img-preview"></div>
                     
                     <div style="display:flex; gap:8px; margin-top:8px;">
-                        <button type="submit" class="save-btn" style="flex:1;" id="saveProductBtn">حفظ النظارة بالسحابة</button>
+                        <button type="submit" class="save-btn" style="flex:1;" id="saveProductBtn">حفظ المنتج بالسحابة</button>
                         <button type="button" class="save-btn" style="background:var(--gray); display:none;" id="cancelEditBtn" onclick="resetProductForm()">إلغاء التعديل</button>
                     </div>
                 </form>
@@ -456,7 +578,7 @@
     </div>
 
     <script>
-        // إعدادات Firebase الخاصة بك
+        // إعدادات Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDTj7ZJuCh9o0UXBpD0KPuMwTpIpKWwzBM",
             authDomain: "view-optical-wip.firebaseapp.com",
@@ -470,11 +592,21 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let settings = { whatsapp: "201000000000", adminPin: "1234" };
+        let settings = { 
+            whatsapp: "201000000000", 
+            supportPhone: "01000000000",
+            branchMap: "https://maps.app.goo.gl/", 
+            facebookUrl: "https://facebook.com",
+            tiktokUrl: "https://tiktok.com",
+            adminPin: "1234" 
+        };
         let products = [];
         let cart = [];
         let orders = [];
+        let members = [];
         let currentCategory = 'all';
+        let currentPage = 1;
+        const itemsPerPage = 18; // 3 أعمدة عرض × 6 صفوف طول = 18 منتج بالصفحة
 
         let currentLightboxImages = [];
         let currentLightboxIndex = 0;
@@ -483,7 +615,80 @@
         let isDragging = false;
         let startX = 0, startY = 0;
 
-        // نظام تتبع الزيارات وتحليلات الساعات
+        // دالة فتح موقع الفرع مباشرة
+        function openBranchMap(e) {
+            e.preventDefault();
+            let mapUrl = settings.branchMap || "https://maps.app.goo.gl/";
+            if(!mapUrl.startsWith('http://') && !mapUrl.startsWith('https://')) {
+                mapUrl = 'https://' + mapUrl;
+            }
+            window.open(mapUrl, '_blank');
+        }
+
+        // إدارة جلسة العضو المفتوحة
+        let currentMember = JSON.parse(localStorage.getItem('view_optical_member') || 'null');
+        function updateMemberUI() {
+            if(currentMember) {
+                document.getElementById('memberBtnText').innerText = currentMember.name.split(' ')[0];
+                document.getElementById('welcomeMemberMsg').innerText = `أهلاً بك يا ${currentMember.name} 💎`;
+                document.getElementById('memberLoggedBox').style.display = 'block';
+                document.getElementById('memberRegisterForm').style.display = 'none';
+                
+                if(document.getElementById('custName')) document.getElementById('custName').value = currentMember.name;
+                if(document.getElementById('custPhone')) document.getElementById('custPhone').value = currentMember.phone;
+            } else {
+                document.getElementById('memberBtnText').innerText = 'تسجيل / حسابي';
+                document.getElementById('memberLoggedBox').style.display = 'none';
+                document.getElementById('memberRegisterForm').style.display = 'block';
+            }
+        }
+        updateMemberUI();
+
+        function openMemberModal() { document.getElementById('memberModal').style.display = 'flex'; }
+        function closeMemberModal() { document.getElementById('memberModal').style.display = 'none'; }
+
+        function handleRegisterMember(e) {
+            e.preventDefault();
+            const name = document.getElementById('memName').value.trim();
+            const email = document.getElementById('memEmail').value.trim();
+            const phone = document.getElementById('memPhone').value.trim();
+
+            let memberData = { name, email, phone, registeredAt: new Date().toLocaleDateString('ar-EG') };
+            db.ref('members').push(memberData);
+            
+            localStorage.setItem('view_optical_member', JSON.stringify(memberData));
+            currentMember = memberData;
+            updateMemberUI();
+            closeMemberModal();
+            alert(`أهلاً بك يا ${name}! تم تسجيل حسابك بنجاح في عروض فيو للبصريات.`);
+        }
+
+        function logoutMember() {
+            localStorage.removeItem('view_optical_member');
+            currentMember = null;
+            updateMemberUI();
+            closeMemberModal();
+        }
+
+        function exportMembersToExcel() {
+            if(members.length === 0) {
+                alert("لا يوجد أعضاء مسجلين حالياً للتصدير!");
+                return;
+            }
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFFالاسم,البريد الالكتروني (الايميل),رقم التليفون\n";
+            members.forEach(m => {
+                csvContent += `"${m.name}","${m.email}","${m.phone}"\n`;
+            });
+            let encodedUri = encodeURI(csvContent);
+            let link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "اعضاء_فيو_للبصريات.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // تتبع الزيارات
         function trackVisitorAnalytics() {
             let visits = JSON.parse(localStorage.getItem('view_optical_visits') || '[]');
             let now = new Date();
@@ -562,7 +767,6 @@
             `;
         }
 
-        // دالة واتساب تعتمد على كود المنتج حصرياً (نظيفة، قصيرة، وتعمل بصاروخ بدون أي أخطاء)
         function sendToWhatsApp(messageText) {
             let rawNumber = settings.whatsapp || "201000000000";
             let cleanNumber = rawNumber.replace(/\D/g, '');
@@ -582,7 +786,6 @@
             sendToWhatsApp(welcomeMsg);
         }
 
-        // ضغط الصور تلقائياً لسرعة فائقة
         function compressImageFile(file, callback) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -621,14 +824,26 @@
             }
         }
 
-        // جلب البيانات من السحابة
+        // جلب البيانات من السحابة وتحديث واجهة السوشيال وخدمة العملاء
         db.ref('settings').on('value', (snapshot) => {
             if (snapshot.exists()) {
                 settings = snapshot.val();
                 if(!settings.adminPin) settings.adminPin = "1234";
-                if(document.getElementById('settingWa')) {
-                    document.getElementById('settingWa').value = settings.whatsapp;
-                }
+                if(!settings.branchMap) settings.branchMap = "https://maps.app.goo.gl/";
+                if(!settings.supportPhone) settings.supportPhone = "01000000000";
+                if(!settings.facebookUrl) settings.facebookUrl = "https://facebook.com";
+                if(!settings.tiktokUrl) settings.tiktokUrl = "https://tiktok.com";
+                
+                if(document.getElementById('settingWa')) document.getElementById('settingWa').value = settings.whatsapp || "";
+                if(document.getElementById('settingSupportPhone')) document.getElementById('settingSupportPhone').value = settings.supportPhone || "";
+                if(document.getElementById('settingBranch')) document.getElementById('settingBranch').value = settings.branchMap || "";
+                if(document.getElementById('settingFb')) document.getElementById('settingFb').value = settings.facebookUrl || "";
+                if(document.getElementById('settingTk')) document.getElementById('settingTk').value = settings.tiktokUrl || "";
+
+                // تحديث الروابط في الموقع الحقيقي
+                if(document.getElementById('fbHeaderBtn')) document.getElementById('fbHeaderBtn').href = settings.facebookUrl;
+                if(document.getElementById('tkHeaderBtn')) document.getElementById('tkHeaderBtn').href = settings.tiktokUrl;
+                if(document.getElementById('footerSupportPhone')) document.getElementById('footerSupportPhone').innerText = settings.supportPhone;
             }
         });
 
@@ -673,6 +888,18 @@
             }
         });
 
+        db.ref('members').on('value', (snapshot) => {
+            members = [];
+            if (snapshot.exists()) {
+                snapshot.forEach((childSnapshot) => {
+                    members.push({ id: childSnapshot.key, ...childSnapshot.val() });
+                });
+            }
+            if(document.getElementById('adminModal').style.display === 'flex') {
+                renderMembersTable();
+            }
+        });
+
         let clickCount = 0;
         let clickTimer = null;
         function checkAdminSecret(e) {
@@ -690,10 +917,15 @@
             const pwd = prompt("أدخل الرمز السري للوحة التحكم:");
             if (pwd === settings.adminPin) {
                 document.getElementById('adminModal').style.display = 'flex';
-                document.getElementById('settingWa').value = settings.whatsapp;
+                document.getElementById('settingWa').value = settings.whatsapp || "";
+                document.getElementById('settingSupportPhone').value = settings.supportPhone || "";
+                document.getElementById('settingBranch').value = settings.branchMap || "";
+                document.getElementById('settingFb').value = settings.facebookUrl || "";
+                document.getElementById('settingTk').value = settings.tiktokUrl || "";
                 showVisitorReport('all', document.querySelector('#adminModal .filter-btn'));
                 renderAdminTable();
                 renderOrdersTable();
+                renderMembersTable();
             } else if (pwd !== null) {
                 alert("الرمز السري غير صحيح!");
             }
@@ -721,9 +953,13 @@
 
         function renderProducts() {
             const grid = document.getElementById('productsGrid');
+            const paginationContainer = document.getElementById('paginationContainer');
             grid.innerHTML = '';
+            paginationContainer.innerHTML = '';
+
             const searchVal = document.getElementById('searchInput').value.toLowerCase();
             const brandVal = document.getElementById('brandFilter').value;
+            const priceSortVal = document.getElementById('priceSortFilter').value;
 
             let filtered = products.filter(p => {
                 let matchCat = true;
@@ -736,6 +972,13 @@
                 return matchCat && matchBrand && matchSearch;
             });
 
+            // فلتر ترتيب الأسعار
+            if (priceSortVal === 'low-high') {
+                filtered.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+            } else if (priceSortVal === 'high-low') {
+                filtered.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+            }
+
             updateBrandDropdown();
 
             if (filtered.length === 0) {
@@ -743,7 +986,15 @@
                 return;
             }
 
-            filtered.forEach(product => {
+            // حساب Pagination (عرض أقصى 18 منتج بالصفحة: 3 أعمدة عرض × 6 صفوف طول)
+            let totalPages = Math.ceil(filtered.length / itemsPerPage);
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            let startIdx = (currentPage - 1) * itemsPerPage;
+            let paginatedProducts = filtered.slice(startIdx, startIdx + itemsPerPage);
+
+            paginatedProducts.forEach(product => {
                 const card = document.createElement('div');
                 card.className = 'product-card';
 
@@ -800,6 +1051,21 @@
                 `;
                 grid.appendChild(card);
             });
+
+            // بناء أزرار الصفحات
+            if (totalPages > 1) {
+                for (let i = 1; i <= totalPages; i++) {
+                    paginationContainer.innerHTML += `
+                        <button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>
+                    `;
+                }
+            }
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            renderProducts();
+            window.scrollTo({ top: 300, behavior: 'smooth' });
         }
 
         function updateActiveDot(productId) {
@@ -832,12 +1098,14 @@
 
         function filterCategory(cat, btn) {
             currentCategory = cat;
+            currentPage = 1;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             if(btn) btn.classList.add('active');
             renderProducts();
         }
 
         function applyFilters() {
+            currentPage = 1;
             renderProducts();
         }
 
@@ -958,7 +1226,7 @@
             let img3 = img3Input || existingImages[2] || null;
 
             if(!img1) {
-                alert("يرجى اختيار الصورة الأساسية للنظارة على الأقل!");
+                alert("يرجى اختيار الصورة الأساسية للمنتج على الأقل!");
                 return;
             }
 
@@ -978,7 +1246,7 @@
             } else {
                 db.ref('products').push(productData, (error) => {
                     if(!error) {
-                        alert("تم حفظ النظارة في السحابة بنجاح!");
+                        alert("تم حفظ المنتج في السحابة بنجاح!");
                         resetProductForm();
                     }
                 });
@@ -1015,8 +1283,8 @@
             document.getElementById('addGlassesForm').reset();
             document.getElementById('editProductId').value = '';
             document.getElementById('gAvailable').value = 'yes';
-            document.getElementById('formBoxTitle').innerText = "إضافة نظارة جديدة";
-            document.getElementById('saveProductBtn').innerText = "حفظ النظارة بالسحابة";
+            document.getElementById('formBoxTitle').innerText = "إضافة منتج / إكسسوار جديد";
+            document.getElementById('saveProductBtn').innerText = "حفظ المنتج بالسحابة";
             document.getElementById('cancelEditBtn').style.display = 'none';
             ['prevG1', 'prevG2', 'prevG3'].forEach(id => {
                 let el = document.getElementById(id);
@@ -1080,15 +1348,45 @@
             });
         }
 
+        function renderMembersTable() {
+            const tbody = document.getElementById('adminMembersTable');
+            tbody.innerHTML = '';
+
+            if(members.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--gray);">لا يوجد أعضاء مسجلين بعد.</td></tr>`;
+                return;
+            }
+
+            members.forEach(m => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${m.name}</td>
+                        <td>${m.email}</td>
+                        <td>${m.phone}</td>
+                    </tr>
+                `;
+            });
+        }
+
         function saveSettings() {
             const wa = document.getElementById('settingWa').value.trim();
+            const supportPhone = document.getElementById('settingSupportPhone').value.trim();
+            const branch = document.getElementById('settingBranch').value.trim();
+            const fb = document.getElementById('settingFb').value.trim();
+            const tk = document.getElementById('settingTk').value.trim();
+
             if(!wa) {
-                alert("يرجى كتابة رقم الواتساب!");
+                alert("يرجى كتابة رقم الواتساب الأساسي!");
                 return;
             }
             settings.whatsapp = wa;
+            settings.supportPhone = supportPhone || "01000000000";
+            settings.branchMap = branch || "https://maps.app.goo.gl/";
+            settings.facebookUrl = fb || "https://facebook.com";
+            settings.tiktokUrl = tk || "https://tiktok.com";
+
             db.ref('settings').set(settings, (error) => {
-                if(!error) alert("تم حفظ رقم الواتساب بنجاح في السحابة!");
+                if(!error) alert("تم حفظ إعدادات المتجر وروابط التواصل في السحابة بنجاح!");
             });
         }
 
@@ -1154,8 +1452,8 @@
 
         lightboxImg.addEventListener('touchstart', (e) => {
             if (e.touches.length === 1) {
-                touchStartX = e.touches[0].clientX;
-                touchStartY = e.touches[0].clientY;
+                touchStartX = e.touches.length === 1 ? e.touches[0].clientX : 0;
+                touchStartY = e.touches.length === 1 ? e.touches[0].clientY : 0;
                 startX = touchStartX - panX;
                 startY = touchStartY - panY;
                 isDragging = true;

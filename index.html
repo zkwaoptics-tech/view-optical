@@ -62,7 +62,6 @@
         }
         .nav-btn:hover { background: var(--accent); color: var(--primary); }
 
-        /* أزرار السوشيال ميديا بالأعلى بشكل شيك */
         .social-icon-btn {
             width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center;
             color: white; font-size: 14px; text-decoration: none; transition: transform 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
@@ -94,7 +93,6 @@
             font-weight: 900;
         }
 
-        /* زر الواتساب العائم الثابت */
         .floating-whatsapp {
             position: fixed; bottom: 25px; left: 25px; background-color: var(--green); color: var(--white);
             width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center;
@@ -104,26 +102,92 @@
 
         .hero {
             background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), url('https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=1200&q=80') center/cover;
-            color: var(--white); text-align: center; padding: 40px 20px;
+            color: var(--white); text-align: center; padding: 35px 20px;
         }
-        .hero h1 { font-size: 30px; color: var(--accent); margin-bottom: 5px; }
+        .hero h1 { font-size: 28px; color: var(--accent); margin-bottom: 5px; }
+
+        /* 3 صور تعريفية للمحل جنب بعض بحجم متساوي */
+        .store-photos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        @media (max-width: 768px) {
+            .store-photos-grid { grid-template-columns: 1fr; gap: 10px; }
+        }
+        .store-photo-card {
+            background: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            position: relative;
+        }
+        .store-photo-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .slider-photo-img {
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        .store-photo-title {
+            padding: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary);
+            background: #f8fafc;
+        }
 
         .container { max-width: 1200px; margin: 25px auto; padding: 0 10px; flex: 1; width: 100%; }
 
         .filters-container { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; }
-        .categories-filter { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+        
+        .categories-filter { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
         .filter-btn {
-            background: var(--white); border: 1px solid #cbd5e1; padding: 6px 14px; border-radius: 30px;
-            cursor: pointer; font-weight: 700; font-size: 13px; transition: 0.3s;
+            background: var(--white); 
+            border: 1px solid #cbd5e1; 
+            padding: 8px 10px; 
+            border-radius: 14px;
+            cursor: pointer; 
+            font-weight: 700; 
+            font-size: 12px; 
+            transition: 0.3s; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 6px;
+            width: 105px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
         }
-        .filter-btn.active, .filter-btn:hover { background: var(--primary); color: var(--white); border-color: var(--primary); }
+        .filter-btn img {
+            width: 65px;
+            height: 65px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid var(--accent);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .filter-btn.active, .filter-btn:hover { 
+            background: var(--primary); 
+            color: var(--white); 
+            border-color: var(--primary); 
+        }
+        .filter-btn.active img, .filter-btn:hover img {
+            border-color: var(--white);
+        }
 
         .secondary-filters { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; align-items: center; }
         .secondary-filters select, .secondary-filters input {
             padding: 8px 14px; border-radius: 8px; border: 1px solid #cbd5e1; font-weight: 700; font-size: 13px;
         }
 
-        /* عرض 3 أعمدة بالعرض للمنتجات */
         .products-grid { 
             display: grid; 
             grid-template-columns: repeat(3, 1fr); 
@@ -135,6 +199,8 @@
             .product-title { font-size: 13px !important; }
             .product-price { font-size: 14px !important; }
             .add-to-cart-btn, .direct-wa-btn { padding: 6px !important; font-size: 11px !important; }
+            .filter-btn { width: 85px; font-size: 11px; padding: 6px; }
+            .filter-btn img { width: 52px; height: 52px; }
         }
 
         .product-card {
@@ -193,7 +259,6 @@
             border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; text-decoration: none;
         }
 
-        /* أزرار التنقل بين الصفحات (Pagination) */
         .pagination { display: flex; justify-content: center; gap: 6px; margin-top: 30px; align-items: center; }
         .page-btn {
             background: var(--white); border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 6px;
@@ -201,7 +266,6 @@
         }
         .page-btn.active, .page-btn:hover { background: var(--primary); color: var(--white); border-color: var(--primary); }
 
-        /* تذييل الصفحة (Footer) لعرض خدمة العملاء أسفل المتجر */
         footer {
             background-color: var(--primary);
             color: var(--white);
@@ -212,7 +276,8 @@
         }
         .footer-content { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
         .footer-title { font-size: 16px; font-weight: 900; color: var(--accent); }
-        .footer-phone { font-size: 18px; font-weight: 700; color: var(--white); direction: ltr; display: inline-block; }
+        .footer-phone { font-size: 18px; font-weight: 700; color: var(--white); direction: ltr; display: inline-block; text-decoration: none; transition: color 0.3s; }
+        .footer-phone:hover { color: var(--accent); }
         .footer-copy { font-size: 11px; color: var(--gray); margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
 
         .modal {
@@ -244,7 +309,6 @@
         .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
         .checkout-box { background: #f8fafc; padding: 15px; border-radius: 8px; margin-top: 15px; }
 
-        /* Lightbox المتطور للتكبير والسحب بين الصور باللمس */
         .lightbox-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.95); z-index: 3000; justify-content: center; align-items: center;
@@ -273,7 +337,7 @@
 </head>
 <body>
 
-    <!-- زر الواتساب العائم الثابت -->
+    <!-- زر الواتساب العائم -->
     <a id="floatingWaBtn" href="#" onclick="openWhatsAppChat(); return false;" class="floating-whatsapp" title="تواصل معنا مباشرة عبر الواتساب">
         <i class="fa-brands fa-whatsapp"></i>
     </a>
@@ -284,19 +348,15 @@
             <span class="logo-en">VIEW OPTICAL</span>
         </div>
         <div class="header-actions">
-            <!-- زر فيسبوك بالأعلى بشعار فيسبوك -->
             <a id="fbHeaderBtn" href="#" target="_blank" class="social-icon-btn fb-btn" title="صفحتنا على فيسبوك">
                 <i class="fa-brands fa-facebook-f"></i>
             </a>
-            <!-- زر تيك توك بالأعلى بشعار تيك توك -->
             <a id="tkHeaderBtn" href="#" target="_blank" class="social-icon-btn tk-btn" title="صفحتنا على تيك توك">
                 <i class="fa-brands fa-tiktok"></i>
             </a>
-            <!-- زر فرعنا -->
             <a id="branchLinkBtn" href="#" onclick="openBranchMap(event)" class="nav-btn">
                 <i class="fa-solid fa-location-dot"></i> فرعنا
             </a>
-            <!-- زر تسجيل دخول الأعضاء -->
             <button id="memberAuthBtn" class="nav-btn" onclick="openMemberModal()">
                 <i class="fa-solid fa-user"></i> <span id="memberBtnText">تسجيل / حسابي</span>
             </button>
@@ -313,21 +373,62 @@
     </section>
 
     <div class="container">
-        <div class="filters-container">
-            <div class="categories-filter">
-                <button class="filter-btn active" onclick="filterCategory('all', this)">جميع المنتجات</button>
-                <button class="filter-btn" onclick="filterCategory('sunglasses', this)">🕶️ شمسية</button>
-                <button class="filter-btn" onclick="filterCategory('optical', this)">👓 طبية</button>
-                <button class="filter-btn" onclick="filterCategory('kids', this)">👶 أطفال</button>
-                <button class="filter-btn" onclick="filterCategory('lenses', this)">👁️ عدسات</button>
-                <button class="filter-btn" onclick="filterCategory('accessories', this)">🎨 إكسسوارات</button>
-                <button class="filter-btn" onclick="filterCategory('sale', this)" style="color: var(--red);">🔥 عروض</button>
+        <!-- 3 صور تعريفية للمحل جنب بعض بحجم متساوي (الصورة 2 تحتوي على سلايدر متقلب تلقائياً كل 3 ثواني بدون أي أسهم) -->
+        <div class="store-photos-grid">
+            <div class="store-photo-card">
+                <img id="storeImg1" src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=500&q=80" alt="صورة 1">
+                <div class="store-photo-title">فيو للبصريات</div>
             </div>
+            
+            <!-- الكارت رقم 2: أحدث الموديلات (سلايدر متحرك تلقائياً بدون أي أسهم أو علامات) -->
+            <div class="store-photo-card">
+                <img id="storeImg2" class="slider-photo-img" src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=500&q=80" alt="أحدث الموديلات">
+                <div class="store-photo-title">أحدث الموديلات</div>
+            </div>
+
+            <div class="store-photo-card">
+                <img id="storeImg3" src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=500&q=80" alt="صورة 3">
+                <div class="store-photo-title">خدمة متميزة</div>
+            </div>
+        </div>
+
+        <div class="filters-container">
+            <!-- أزرار الأقسام مع صور واضحة وكبيرة نسبياً فوق الكلمة -->
+            <div class="categories-filter">
+                <button class="filter-btn active" onclick="filterCategory('all', this)">
+                    <img id="catImg_all" src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=150&q=80" alt="الكل">
+                    <span>الكل</span>
+                </button>
+                <button class="filter-btn" onclick="filterCategory('sunglasses', this)">
+                    <img id="catImg_sunglasses" src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=150&q=80" alt="شمسية">
+                    <span>شمسية</span>
+                </button>
+                <button class="filter-btn" onclick="filterCategory('optical', this)">
+                    <img id="catImg_optical" src="https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&w=150&q=80" alt="طبية">
+                    <span>طبية</span>
+                </button>
+                <button class="filter-btn" onclick="filterCategory('kids', this)">
+                    <img id="catImg_kids" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="أطفال">
+                    <span>أطفال</span>
+                </button>
+                <button class="filter-btn" onclick="filterCategory('lenses', this)">
+                    <img id="catImg_lenses" src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=150&q=80" alt="عدسات">
+                    <span>عدسات</span>
+                </button>
+                <button class="filter-btn" onclick="filterCategory('accessories', this)">
+                    <img id="catImg_accessories" src="https://images.unsplash.com/photo-1614715838608-dd527c46231d?auto=format&fit=crop&w=150&q=80" alt="إكسسوارات">
+                    <span>إكسسوارات</span>
+                </button>
+                <button class="filter-btn" onclick="filterCategory('sale', this)" style="color: var(--red);">
+                    <img id="catImg_sale" src="https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?auto=format&fit=crop&w=150&q=80" alt="عروض">
+                    <span>عروض</span>
+                </button>
+            </div>
+
             <div class="secondary-filters">
                 <select id="brandFilter" onchange="applyFilters()">
                     <option value="all">جميع الماركات</option>
                 </select>
-                <!-- فلتر ترتيب السعر -->
                 <select id="priceSortFilter" onchange="applyFilters()">
                     <option value="default">ترتيب حسب السعر</option>
                     <option value="low-high">السعر: من الأقل للأعلى</option>
@@ -338,20 +439,19 @@
         </div>
 
         <div class="products-grid" id="productsGrid"></div>
-        <!-- أزرار التنقل بين الصفحات (Pagination) -->
         <div class="pagination" id="paginationContainer"></div>
     </div>
 
-    <!-- تذييل الصفحة (Footer) لعرض خدمة العملاء أسفل المتجر -->
     <footer>
         <div class="footer-content">
             <div class="footer-title"><i class="fa-solid fa-headset"></i> خدمة العملاء والدعم</div>
-            <div id="footerSupportPhone" class="footer-phone">01000000000</div>
+            <!-- رقم خدمة العملاء يدعم الاتصال المباشر بنقرة واحدة -->
+            <a id="footerSupportPhone" href="tel:01000000000" class="footer-phone" title="اضغط للاتصال المباشر">01000000000</a>
             <div class="footer-copy">© 2026 فيو للبصريات (View Optical) — جميع الحقوق محفوظة</div>
         </div>
     </footer>
 
-    <!-- Lightbox المتطور للتكبير والتصفح باللمس -->
+    <!-- Lightbox المتطور -->
     <div class="lightbox-modal" id="lightboxModal">
         <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
         <button class="lightbox-nav lightbox-prev" onclick="prevLightboxImage()"><i class="fa-solid fa-chevron-right"></i></button>
@@ -362,7 +462,7 @@
         <div class="lightbox-dots" id="lightboxDots"></div>
     </div>
 
-    <!-- نافذة تسجيل العضوية للعميل -->
+    <!-- نافذة تسجيل العضوية -->
     <div class="modal" id="memberModal">
         <div class="modal-content" style="max-width: 450px;">
             <span class="close-modal" onclick="closeMemberModal()">&times;</span>
@@ -422,7 +522,66 @@
             <span class="close-modal" onclick="closeAdminModal()">&times;</span>
             <div class="modal-title">لوحة تحكم فيو للبصريات (سحابي ☁️)</div>
             
-            <!-- إعدادات المتجر وروابط التواصل والسوشيال -->
+            <!-- إدارة الصور التعريفية وأيقونات الأقسام -->
+            <div style="background:#fef3c7; border: 1px solid #fde047; padding:12px; border-radius:8px; margin-bottom:15px;">
+                <h4 style="color:#854d0e; font-size:13px;">🖼️ إدارة الصور التعريفية وأيقونات الأقسام</h4>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:8px;">
+                    <div class="form-group file-input-group">
+                        <label>📸 صورة المحل 1 (يمين):</label>
+                        <input type="file" accept="image/*" onchange="uploadSpecialImg(this, 'store_1')">
+                    </div>
+                    
+                    <!-- التحكم بصور السلايدر المتحرك في الصورة 2 -->
+                    <div class="form-group file-input-group" style="background:#fef08a; border-color:#eab308;">
+                        <label>🔄 صورة 2 (أ) - أحدث الموديلات:</label>
+                        <input type="file" accept="image/*" onchange="uploadSpecialImg(this, 'store_2_a')">
+                    </div>
+                    <div class="form-group file-input-group" style="background:#fef08a; border-color:#eab308;">
+                        <label>🔄 صورة 2 (ب) - أحدث الموديلات:</label>
+                        <input type="file" accept="image/*" onchange="uploadSpecialImg(this, 'store_2_b')">
+                    </div>
+                    <div class="form-group file-input-group" style="background:#fef08a; border-color:#eab308;">
+                        <label>🔄 صورة 2 (ج) - أحدث الموديلات:</label>
+                        <input type="file" accept="image/*" onchange="uploadSpecialImg(this, 'store_2_c')">
+                    </div>
+
+                    <div class="form-group file-input-group">
+                        <label>📸 صورة المحل 3 (يسار):</label>
+                        <input type="file" accept="image/*" onchange="uploadSpecialImg(this, 'store_3')">
+                    </div>
+
+                    <div class="form-group file-input-group">
+                        <label>📸 أيقونة قسم الكل:</label>
+                        <input type="file" accept="image/*" onchange="uploadSpecialImg(this, 'cat_all')">
+                    </div>
+                    <div class="form-group file-input-group">
+                        <label>📸 أيقونة قسم شمسية:</label>
+                        <input type="file" accept="image/*" onchange="uploadSpecialImg(this, 'cat_sunglasses')">
+                    </div>
+                    <div class="form-group file-input-group">
+                        <label>📸 أيقونة قسم طبية:</label>
+                        <input type="file" accept="image/*" onchange="uploadSpecialImg(this, 'cat_optical')">
+                    </div>
+                    <div class="form-group file-input-group">
+                        <label>📸 أيقونة قسم أطفال:</label>
+                        <input type="file" accept="image/*" onchange="uploadSpecialImg(this, 'cat_kids')">
+                    </div>
+                    <div class="form-group file-input-group">
+                        <label>📸 أيقونة قسم عدسات:</label>
+                        <input type="file" accept="image/*" onchange="uploadSpecialImg(this, 'cat_lenses')">
+                    </div>
+                    <div class="form-group file-input-group">
+                        <label>📸 أيقونة قسم إكسسوارات:</label>
+                        <input type="file" accept="image/*" onchange="uploadSpecialImg(this, 'cat_accessories')">
+                    </div>
+                    <div class="form-group file-input-group">
+                        <label>📸 أيقونة قسم عروض:</label>
+                        <input type="file" accept="image/*" onchange="uploadSpecialImg(this, 'cat_sale')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- إعدادات التواصل -->
             <div style="background:#f1f5f9; padding:12px; border-radius:8px; margin-bottom:15px;">
                 <h4 style="font-size:13px;">إعدادات المتجر وروابط التواصل والسوشيال</h4>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:6px;">
@@ -460,7 +619,7 @@
                 </div>
             </div>
 
-            <!-- سجل الأعضاء المسجلين + زر تصدير Excel -->
+            <!-- سجل الأعضاء -->
             <div style="background:#ecfdf5; border:1px solid #a7f3d0; padding:12px; border-radius:8px; margin-bottom:15px;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <h4 style="color:#047857; font-size:13px;">👥 سجل إيميلات وأرقام الأعضاء المسجلين</h4>
@@ -478,28 +637,25 @@
                 </table>
             </div>
 
-            <!-- لوحة تحليلات الزوار المتقدمة (الفترة + الساعات) -->
+            <!-- تحليلات الزوار -->
             <div style="background:#f8fafc; border: 1px solid #cbd5e1; padding:12px; border-radius:8px; margin-bottom:15px;">
                 <h4 style="color:var(--primary); margin-bottom:8px; font-size:13px;">📊 إحصائيات وزوار متقدمة</h4>
-                
                 <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
                     <button class="filter-btn active" onclick="showVisitorReport('all', this)">كل الزيارات</button>
                     <button class="filter-btn" onclick="showVisitorReport('today', this)">اليوم</button>
                     <button class="filter-btn" onclick="showVisitorReport('month', this)">هذا الشهر</button>
                 </div>
-
                 <div style="background:#e2e8f0; padding:10px; border-radius:6px; margin-bottom:10px; display:flex; gap:8px; flex-wrap:wrap; align-items:flex-end;">
                     <div class="form-group" style="flex:1; margin:0;"><label style="font-size:11px;">من تاريخ:</label><input type="date" id="dateFrom" style="padding:4px; font-size:11px;"></div>
                     <div class="form-group" style="flex:1; margin:0;"><label style="font-size:11px;">إلى تاريخ:</label><input type="date" id="dateTo" style="padding:4px; font-size:11px;"></div>
                     <button class="save-btn" style="padding:6px 12px; font-size:11px;" onclick="filterByCustomDates()">بحث بالفترة</button>
                 </div>
-
                 <div id="visitorStatsBox" style="font-weight:700; font-size:13px; color:var(--accent); background:var(--primary); padding:10px; border-radius:6px; text-align:center; line-height: 1.8;">
                     جاري تحميل التحليلات...
                 </div>
             </div>
 
-            <!-- نموذج إضافة / تعديل النظارات والإكسسوارات -->
+            <!-- نموذج إضافة / تعديل النظارات -->
             <div style="background:#f1f5f9; padding:12px; border-radius:8px; margin-bottom:15px;">
                 <h4 id="formBoxTitle" style="font-size:13px;">إضافة منتج / إكسسوار جديد</h4>
                 <form id="addGlassesForm" onsubmit="handleAddGlasses(event)">
@@ -541,7 +697,7 @@
                 </form>
             </div>
 
-            <!-- إدارة وحذف وتعديل -->
+            <!-- جدول المنتجات -->
             <div style="background:#f1f5f9; padding:12px; border-radius:8px; margin-bottom:15px;">
                 <h4 style="font-size:13px;">البحث والتعديل السريع (من السحابة)</h4>
                 <input type="text" id="adminSearchInput" oninput="renderAdminTable()" placeholder="ابحث بالكود أو الموديل..." style="width:100%; padding:6px; border-radius:6px; border:1px solid #cbd5e1; margin-top:6px; font-size:12px;">
@@ -558,7 +714,7 @@
                 </table>
             </div>
 
-            <!-- سجل الطلبات -->
+            <!-- جدول الطلبات -->
             <div style="background:#f1f5f9; padding:12px; border-radius:8px;">
                 <h4 style="font-size:13px;">سجل الطلبات والعملاء (من السحابة)</h4>
                 <table>
@@ -578,7 +734,6 @@
     </div>
 
     <script>
-        // إعدادات Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDTj7ZJuCh9o0UXBpD0KPuMwTpIpKWwzBM",
             authDomain: "view-optical-wip.firebaseapp.com",
@@ -598,15 +753,51 @@
             branchMap: "https://maps.app.goo.gl/", 
             facebookUrl: "https://facebook.com",
             tiktokUrl: "https://tiktok.com",
-            adminPin: "1234" 
+            adminPin: "1234",
+            images: {
+                store_1: "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=500&q=80",
+                store_2_a: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=500&q=80",
+                store_2_b: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=500&q=80",
+                store_2_c: "https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&w=500&q=80",
+                store_3: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=500&q=80",
+                cat_all: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=150&q=80",
+                cat_sunglasses: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=150&q=80",
+                cat_optical: "https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&w=150&q=80",
+                cat_kids: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
+                cat_lenses: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=150&q=80",
+                cat_accessories: "https://images.unsplash.com/photo-1614715838608-dd527c46231d?auto=format&fit=crop&w=150&q=80",
+                cat_sale: "https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?auto=format&fit=crop&w=150&q=80"
+            }
         };
+
+        let autoSliderImages = [];
+        let autoSliderIndex = 0;
+        let sliderTimer = null;
+
+        function startAutoSlider() {
+            if(sliderTimer) clearInterval(sliderTimer);
+            sliderTimer = setInterval(() => {
+                if(autoSliderImages.length > 0) {
+                    autoSliderIndex = (autoSliderIndex + 1) % autoSliderImages.length;
+                    const imgEl = document.getElementById('storeImg2');
+                    if(imgEl) {
+                        imgEl.style.opacity = 0;
+                        setTimeout(() => {
+                            imgEl.src = autoSliderImages[autoSliderIndex];
+                            imgEl.style.opacity = 1;
+                        }, 400);
+                    }
+                }
+            }, 3000); // تتغير كل 3 ثواني أوتوماتيك
+        }
+
         let products = [];
         let cart = [];
         let orders = [];
         let members = [];
         let currentCategory = 'all';
         let currentPage = 1;
-        const itemsPerPage = 18; // 3 أعمدة عرض × 6 صفوف طول = 18 منتج بالصفحة
+        const itemsPerPage = 18;
 
         let currentLightboxImages = [];
         let currentLightboxIndex = 0;
@@ -615,7 +806,6 @@
         let isDragging = false;
         let startX = 0, startY = 0;
 
-        // دالة فتح موقع الفرع مباشرة
         function openBranchMap(e) {
             e.preventDefault();
             let mapUrl = settings.branchMap || "https://maps.app.goo.gl/";
@@ -625,7 +815,6 @@
             window.open(mapUrl, '_blank');
         }
 
-        // إدارة جلسة العضو المفتوحة
         let currentMember = JSON.parse(localStorage.getItem('view_optical_member') || 'null');
         function updateMemberUI() {
             if(currentMember) {
@@ -688,7 +877,6 @@
             document.body.removeChild(link);
         }
 
-        // تتبع الزيارات
         function trackVisitorAnalytics() {
             let visits = JSON.parse(localStorage.getItem('view_optical_visits') || '[]');
             let now = new Date();
@@ -824,15 +1012,23 @@
             }
         }
 
-        // جلب البيانات من السحابة وتحديث واجهة السوشيال وخدمة العملاء
+        function uploadSpecialImg(input, key) {
+            if (input.files && input.files[0]) {
+                compressImageFile(input.files[0], function(compressedDataUrl) {
+                    if(!settings.images) settings.images = {};
+                    settings.images[key] = compressedDataUrl;
+                    db.ref('settings').set(settings, (err) => {
+                        if(!err) alert("تم تحديث الصورة السحابية بنجاح!");
+                    });
+                });
+            }
+        }
+
         db.ref('settings').on('value', (snapshot) => {
             if (snapshot.exists()) {
-                settings = snapshot.val();
-                if(!settings.adminPin) settings.adminPin = "1234";
-                if(!settings.branchMap) settings.branchMap = "https://maps.app.goo.gl/";
-                if(!settings.supportPhone) settings.supportPhone = "01000000000";
-                if(!settings.facebookUrl) settings.facebookUrl = "https://facebook.com";
-                if(!settings.tiktokUrl) settings.tiktokUrl = "https://tiktok.com";
+                let fetched = snapshot.val();
+                settings = { ...settings, ...fetched };
+                if(!settings.images) settings.images = {};
                 
                 if(document.getElementById('settingWa')) document.getElementById('settingWa').value = settings.whatsapp || "";
                 if(document.getElementById('settingSupportPhone')) document.getElementById('settingSupportPhone').value = settings.supportPhone || "";
@@ -840,10 +1036,43 @@
                 if(document.getElementById('settingFb')) document.getElementById('settingFb').value = settings.facebookUrl || "";
                 if(document.getElementById('settingTk')) document.getElementById('settingTk').value = settings.tiktokUrl || "";
 
-                // تحديث الروابط في الموقع الحقيقي
                 if(document.getElementById('fbHeaderBtn')) document.getElementById('fbHeaderBtn').href = settings.facebookUrl;
                 if(document.getElementById('tkHeaderBtn')) document.getElementById('tkHeaderBtn').href = settings.tiktokUrl;
-                if(document.getElementById('footerSupportPhone')) document.getElementById('footerSupportPhone').innerText = settings.supportPhone;
+                
+                // تحديث وتفعيل الاتصال المباشر لرقم خدمة العملاء بالأسفل
+                let supPhoneEl = document.getElementById('footerSupportPhone');
+                if(supPhoneEl) {
+                    supPhoneEl.innerText = settings.supportPhone;
+                    supPhoneEl.href = `tel:${settings.supportPhone}`;
+                }
+
+                // تحديث الـ 3 صور التعريفية للمحل بالأعلى
+                if(settings.images.store_1 && document.getElementById('storeImg1')) document.getElementById('storeImg1').src = settings.images.store_1;
+                if(settings.images.store_3 && document.getElementById('storeImg3')) document.getElementById('storeImg3').src = settings.images.store_3;
+
+                // تجهيز قائمة السلايدر المتحرك في الصورة رقم 2
+                autoSliderImages = [];
+                if(settings.images.store_2_a) autoSliderImages.push(settings.images.store_2_a);
+                if(settings.images.store_2_b) autoSliderImages.push(settings.images.store_2_b);
+                if(settings.images.store_2_c) autoSliderImages.push(settings.images.store_2_c);
+
+                if(autoSliderImages.length === 0) {
+                    autoSliderImages = [
+                        "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=500&q=80",
+                        "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=500&q=80",
+                        "https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&w=500&q=80"
+                    ];
+                }
+
+                startAutoSlider();
+
+                // تحديث صور أيقونات الأقسام الكبيرة والواضحة
+                ['all', 'sunglasses', 'optical', 'kids', 'lenses', 'accessories', 'sale'].forEach(cat => {
+                    let imgEl = document.getElementById(`catImg_${cat}`);
+                    if(imgEl && settings.images[`cat_${cat}`]) {
+                        imgEl.src = settings.images[`cat_${cat}`];
+                    }
+                });
             }
         });
 
@@ -954,6 +1183,7 @@
         function renderProducts() {
             const grid = document.getElementById('productsGrid');
             const paginationContainer = document.getElementById('paginationContainer');
+            
             grid.innerHTML = '';
             paginationContainer.innerHTML = '';
 
@@ -972,7 +1202,6 @@
                 return matchCat && matchBrand && matchSearch;
             });
 
-            // فلتر ترتيب الأسعار
             if (priceSortVal === 'low-high') {
                 filtered.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
             } else if (priceSortVal === 'high-low') {
@@ -986,7 +1215,6 @@
                 return;
             }
 
-            // حساب Pagination (عرض أقصى 18 منتج بالصفحة: 3 أعمدة عرض × 6 صفوف طول)
             let totalPages = Math.ceil(filtered.length / itemsPerPage);
             if (currentPage > totalPages) currentPage = totalPages;
             if (currentPage < 1) currentPage = 1;
@@ -1052,7 +1280,6 @@
                 grid.appendChild(card);
             });
 
-            // بناء أزرار الصفحات
             if (totalPages > 1) {
                 for (let i = 1; i <= totalPages; i++) {
                     paginationContainer.innerHTML += `
@@ -1109,7 +1336,6 @@
             renderProducts();
         }
 
-        // إدارة السلة
         function addToCart(product) {
             if(product.isAvailable === 'no') return;
             cart.push(product);
@@ -1390,7 +1616,6 @@
             });
         }
 
-        // Lightbox Functions
         function openLightbox(imagesArray, index) {
             currentLightboxImages = imagesArray;
             currentLightboxIndex = index;
@@ -1463,7 +1688,7 @@
         lightboxImg.addEventListener('touchmove', (e) => {
             if (!isDragging) return;
             if (e.touches.length === 1) {
-                let currentX = e.touches[0].clientX;
+                let currentX = e.touches.length === 1 ? e.touches[0].clientX : 0;
                 let currentY = e.touches[0].clientY;
                 if(lightboxZoom > 1) {
                     panX = currentX - startX;

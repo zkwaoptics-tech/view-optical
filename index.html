@@ -117,6 +117,31 @@
             padding: 2px 5px; border-radius: 4px; font-weight: 900; font-size: 9px; z-index: 10;
         }
 
+        /* حاوية الصور مع إمكانية إظهار علامة نفذت الكمية بخط أحمر خفيف */
+        .product-images-wrapper {
+            position: relative;
+        }
+        .sold-out-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.75);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 12;
+            pointer-events: none;
+        }
+        .sold-out-text {
+            color: var(--red);
+            font-weight: 900;
+            font-size: 15px;
+            border: 2px dashed var(--red);
+            padding: 4px 12px;
+            border-radius: 6px;
+            background: rgba(254, 226, 226, 0.9);
+            transform: rotate(-10deg);
+        }
+
         .product-images { 
             position: relative; 
             height: 140px; 
@@ -160,6 +185,7 @@
             border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; transition: 0.3s;
         }
         .add-to-cart-btn:hover { background: var(--accent); color: var(--primary); }
+        .add-to-cart-btn:disabled { background: var(--gray); cursor: not-allowed; opacity: 0.6; }
 
         .direct-wa-btn {
             background: var(--green); color: var(--white); border: none; padding: 8px 10px;
@@ -375,8 +401,11 @@
                         <div class="form-group"><label>المقاس</label><input type="text" id="gSize" placeholder="54-18"></div>
                     </div>
                     <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
+                        <div class="form-group"><label>حالة التوفر</label><select id="gAvailable"><option value="yes">متوفر بالمخزون</option><option value="no">نفذت الكمية</option></select></div>
                         <div class="form-group"><label>Sale؟</label><select id="gIsSale"><option value="no">لا</option><option value="yes">نعم</option></select></div>
                         <div class="form-group"><label>السعر (ج.م)</label><input type="number" id="gPrice" required placeholder="1200"></div>
+                    </div>
+                    <div style="display:grid; grid-template-columns: 1fr; gap:8px;">
                         <div class="form-group"><label>السعر القديم</label><input type="number" id="gOldPrice" placeholder="1500"></div>
                     </div>
                     <div class="form-group file-input-group"><label>📸 صورة 1:</label><input type="file" id="gImg1" accept="image/*" onchange="previewImageCompressed(this, 'prevG1')"><img id="prevG1" class="img-preview"></div>
@@ -398,7 +427,7 @@
                     <thead>
                         <tr>
                             <th>الكود / البراند</th>
-                            <th>الاسم</th>
+                            <th>الاسم والحالة</th>
                             <th>السعر</th>
                             <th>إجراء</th>
                         </tr>
@@ -481,7 +510,7 @@
             let timePeriod = "الصباح (النهار)";
             if (peakHour >= 12 && peakHour < 17) timePeriod = "بعد الظهر والعصر";
             else if (peakHour >= 17 && peakHour < 22) timePeriod = "المساء (الذروة الأولى)";
-            else if (peakHour >= 22 || pop < 4) timePeriod = "الليل المتأخر";
+            else if (peakHour >= 22 || peakHour < 4) timePeriod = "الليل المتأخر";
 
             return `أكثر ساعة دخول: (${peakHour}:00) — التوقيت المفضل: ${timePeriod}`;
         }
@@ -619,6 +648,7 @@
                         size: "54-18-140",
                         category: "sunglasses",
                         isSale: "yes",
+                        isAvailable: "yes",
                         price: "1200",
                         oldPrice: "1600",
                         images: ["https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=500&q=80"]
@@ -728,7 +758,8 @@
                     }
                 });
 
-                // رسالة الواتساب البسيطة المعتمدة على الكود فقط
+                let isSoldOut = product.isAvailable === 'no';
+
                 let directWaMsg = 
                     `مرحباً فيو للبصريات 👓\n` +
                     `أريد الاستفسار أو طلب هذا المنتج:\n\n` +
@@ -739,9 +770,12 @@
 
                 card.innerHTML = `
                     ${product.isSale === 'yes' ? '<div class="sale-badge">SALE</div>' : ''}
-                    <div class="product-images" id="slider-${product.id}" onscroll="updateActiveDot('${product.id}')">
-                        ${imgsHtml}
-                        <div class="img-dots">${dotsHtml}</div>
+                    <div class="product-images-wrapper">
+                        ${isSoldOut ? '<div class="sold-out-overlay"><span class="sold-out-text">نفذت الكمية</span></div>' : ''}
+                        <div class="product-images" id="slider-${product.id}" onscroll="updateActiveDot('${product.id}')">
+                            ${imgsHtml}
+                            <div class="img-dots">${dotsHtml}</div>
+                        </div>
                     </div>
                     <div class="product-info">
                         <div class="product-meta">
@@ -755,8 +789,8 @@
                             ${product.oldPrice ? `<span class="old-price">${product.oldPrice} ج.م</span>` : ''}
                         </div>
                         <div class="card-actions">
-                            <button class="add-to-cart-btn" onclick='addToCart(${JSON.stringify(product)})'>
-                                <i class="fa-solid fa-cart-plus"></i> أضف
+                            <button class="add-to-cart-btn" ${isSoldOut ? 'disabled' : ''} onclick='addToCart(${JSON.stringify(product)})'>
+                                <i class="fa-solid fa-cart-plus"></i> ${isSoldOut ? 'نفذت الكمية' : 'أضف'}
                             </button>
                             <button onclick='sendToWhatsApp(${JSON.stringify(directWaMsg)})' class="direct-wa-btn" title="طلب مباشر">
                                 <i class="fa-brands fa-whatsapp"></i>
@@ -809,6 +843,7 @@
 
         // إدارة السلة
         function addToCart(product) {
+            if(product.isAvailable === 'no') return;
             cart.push(product);
             updateCartUI();
             alert(`تمت إضافة (${product.name}) إلى السلة بنجاح!`);
@@ -903,6 +938,7 @@
             const brand = document.getElementById('gBrand').value.trim();
             const category = document.getElementById('gCategory').value;
             const size = document.getElementById('gSize').value.trim();
+            const isAvailable = document.getElementById('gAvailable').value;
             const isSale = document.getElementById('gIsSale').value;
             const price = document.getElementById('gPrice').value.trim();
             const oldPrice = document.getElementById('gOldPrice').value.trim();
@@ -930,7 +966,7 @@
             if(img2) imagesArr.push(img2);
             if(img3) imagesArr.push(img3);
 
-            let productData = { code, name, brand, category, size, isSale, price, oldPrice, images: imagesArr };
+            let productData = { code, name, brand, category, size, isAvailable, isSale, price, oldPrice, images: imagesArr };
 
             if(editId) {
                 db.ref('products/' + editId).set(productData, (error) => {
@@ -959,6 +995,7 @@
             document.getElementById('gBrand').value = p.brand || '';
             document.getElementById('gCategory').value = p.category || 'sunglasses';
             document.getElementById('gSize').value = p.size || '';
+            document.getElementById('gAvailable').value = p.isAvailable || 'yes';
             document.getElementById('gIsSale').value = p.isSale || 'no';
             document.getElementById('gPrice').value = p.price || '';
             document.getElementById('gOldPrice').value = p.oldPrice || '';
@@ -977,6 +1014,7 @@
         function resetProductForm() {
             document.getElementById('addGlassesForm').reset();
             document.getElementById('editProductId').value = '';
+            document.getElementById('gAvailable').value = 'yes';
             document.getElementById('formBoxTitle').innerText = "إضافة نظارة جديدة";
             document.getElementById('saveProductBtn').innerText = "حفظ النظارة بالسحابة";
             document.getElementById('cancelEditBtn').style.display = 'none';
@@ -997,10 +1035,14 @@
             let filtered = products.filter(p => p.name.toLowerCase().includes(search) || (p.code && p.code.toLowerCase().includes(search)) || p.brand.toLowerCase().includes(search));
 
             filtered.forEach(p => {
+                let statusBadge = p.isAvailable === 'no' ? 
+                    '<span style="color:var(--red); font-weight:900; font-size:10px;">(نفذت الكمية)</span>' : 
+                    '<span style="color:var(--green); font-weight:900; font-size:10px;">(متوفر)</span>';
+
                 tbody.innerHTML += `
                     <tr>
                         <td>${p.code || '-'} / ${p.brand}</td>
-                        <td>${p.name}</td>
+                        <td>${p.name} <br> ${statusBadge}</td>
                         <td>${p.price} ج.م</td>
                         <td>
                             <button class="edit-btn" onclick="editProduct('${p.id}')">تعديل</button>
@@ -1012,7 +1054,7 @@
         }
 
         function deleteProduct(id) {
-            if(confirm("هل أنت متأكد من حذف هذا المنتج من السحابة؟")) {
+            if(confirm("هل أنت متأكد من حذف هذا المنتج نهائياً من السحابة؟")) {
                 db.ref('products/' + id).remove();
             }
         }
